@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 struct sp_config_t
 {
@@ -22,28 +23,230 @@ struct sp_config_t
 };
 
 
-void SetConfigValue(char * var, char * val){
+bool SetConfigValue(char * var, char * val,SPConfig spConfig,SP_CONFIG_MSG *msg){
+	int i;
 	if(strcmp(var,"spImagesDirectory")==0){
-		printf("%s = %s",var,val);
+		i=0;
+		while(val[i]!='\0'){
+			if (val[i]==' '){
+				*msg=SP_CONFIG_INVALID_STRING;
+				return false;
+			}
+			i++;
+		}
+		spConfig->spImagesDirectory=malloc(sizeof(char)*1024);
+		strcpy( spConfig->spImagesDirectory, val);
+		printf("%s - %s\n",var,val);
 	}
-	//TODO ALL THE REST
+	else if(strcmp(var,"spImagesPrefix")==0){
+		i=0;
+				while(val[i]!='\0'){
+					if (val[i]==' '){
+						*msg=SP_CONFIG_INVALID_STRING;
+						return false;
+					}
+					i++;
+				}
+		spConfig->spImagesPrefix=malloc(sizeof(char)*1024);
+		strcpy( spConfig->spImagesPrefix, val);
+		printf("%s - %s\n",var,val);
+
+	}
+	else if(strcmp(var,"spImagesSuffix")==0){
+		i=0;
+				while(val[i]!='\0'){
+					if (val[i]==' '){
+						*msg=SP_CONFIG_INVALID_STRING;
+						return false;
+					}
+					i++;
+				}
+				spConfig->spImagesSuffix=malloc(sizeof(char)*1024);
+
+			strcpy( spConfig->spImagesSuffix, val);
+			printf("%s - %s\n",var,val);
+
+		}
+	else if(strcmp(var,"spPCAFilename")==0){
+		i=0;
+				while(val[i]!='\0'){
+					if (val[i]==' '){
+						*msg=SP_CONFIG_INVALID_STRING;
+						return false;
+					}
+					i++;
+				}
+				spConfig->spPCAFilename=malloc(sizeof(char)*1024);
+
+			strcpy( spConfig->spPCAFilename, val);
+			printf("%s - %s\n",var,val);
+
+		}
+	else if(strcmp(var,"spNumOfFeatures")==0){
+		i=0;
+				while(val[i]!='\0'){
+					if (val[i]==' '){
+						*msg=SP_CONFIG_INVALID_STRING;
+						return false;
+					}
+					i++;
+				}
+				spConfig->spNumOfFeatures=malloc(sizeof(char)*1024);
+
+				strcpy( spConfig->spNumOfFeatures, val);
+				printf("%s - %s\n",var,val);
+
+			}
+	else if(strcmp(var,"spNumOfImages")==0){
+				if(atoi(val)<1){
+					*msg=SP_CONFIG_INVALID_INTEGER;
+					return false;
+				}
+				spConfig->spNumOfImages=atoi(val);
+			}
+	else if(strcmp(var,"spPCADimension")==0){
+				if(atoi(val)<10 || atoi(val)>28){
+					*msg=SP_CONFIG_INVALID_INTEGER;
+					return false;
+				}
+				spConfig->spPCADimension=atoi(val);
+				printf("%s - %s\n",var,val);
+
+
+			}
+	else if(strcmp(var,"spNumOfSimilarImages")==0){
+				if(atoi(val)<1){
+					*msg=SP_CONFIG_INVALID_INTEGER;
+					return false;
+				}
+				spConfig->spNumOfSimilarImages=atoi(val);
+				printf("%s - %s\n",var,val);
+
+			}
+	else if(strcmp(var,"spKNN")==0){
+				if(atoi(val)<1){
+					*msg=SP_CONFIG_INVALID_INTEGER;
+					return false;
+				}
+				spConfig->spKNN=atoi(val);
+				printf("%s - %s\n",var,val);
+
+			}
+	else if(strcmp(var,"spLoggerLevel")==0){
+						i=atoi(val);
+						if(i<1 || i>4){
+							*msg=SP_CONFIG_INVALID_INTEGER;
+							return false;
+						}
+						spConfig->spLoggerLevel=atoi(val);
+						printf("%s - %s\n",var,val);
+
+					}
+	else if(strcmp(var,"spExtractionMode")==0){
+
+				 if(val[0]=='0'){
+					spConfig->spExtractionMode=false;
+					printf("%s - %s\n",var,val);
+
+				}
+				else if(val[0]=='1'){
+					spConfig->spExtractionMode=true;
+					printf("%s - %s\n",var,val);
+
+				}
+				else{
+		           *msg=SP_CONFIG_INVALID_INTEGER;
+		        	return false;
+				}
+
+				}
+	else if(strcmp(var,"spMinimalGUI")==0){
+
+					 if(val[0]=='0'){
+						spConfig->spMinimalGUI=false;
+						printf("%s - %s\n",var,val);
+
+					}
+					else if(val[0]=='1'){
+						spConfig->spMinimalGUI=true;
+						printf("%s - %s\n",var,val);
+
+					}
+					else{
+			           *msg=SP_CONFIG_INVALID_INTEGER;
+			        	return false;
+					}
+
+					}
+	else if(strcmp(var,"spKDTreeSplitMethod")==0){
+		if(strcmp(val,"RANDOM")==0)
+			spConfig->spKDTreeSplitMethod= RANDOM;
+		else if(strcmp(val,"MAX_SPREAD")==0)
+			spConfig->spKDTreeSplitMethod= MAX_SPREAD;
+		else if(strcmp(val,"INCREMENTAL")==0)
+					spConfig->spKDTreeSplitMethod= INCREMENTAL;
+		else{
+		     *msg=SP_CONFIG_INVALID_STRING;
+			return false;
+		}
+		printf("%s - %s\n",var,val);
+
+	}
+	return true;
+
 }
 
 SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 {
+	SPConfig spConfig=malloc( sizeof(SPConfig));
+	char *line = malloc( sizeof(char) * 1024 );
+	char *var=malloc( sizeof(char) * 1024 );
+	char *value=malloc( sizeof(char) * 1024 );
+	int varOrValue=0; //0=nothing yet, 1= var, 2=value;
+    int varIndex=0;
+    int valIndex=0;
 	int i;
-	FILE* configFile = fopen(filename,"r");
-	char line[1024];
-	char var[1024],value[1024];
-	int varOrValue=0; //0=nothig yet, 1= var, 2=value;
-    int varIndex,valIndex;
+	bool setResult;
+	FILE* configFile;
+
+	if(line==NULL || var==NULL || value==NULL || spConfig==NULL){
+		*msg=SP_CONFIG_ALLOC_FAIL;
+		return NULL;
+	}
+
+	if(filename==NULL){
+		*msg=SP_CONFIG_INVALID_ARGUMENT;
+		return NULL;
+	}
+
+	configFile = fopen(filename,"r");
+	if(configFile==NULL){
+		*msg=SP_CONFIG_CANNOT_OPEN_FILE;
+		return NULL;
+	}
+	spConfig->spPCADimension=20;
+	spConfig->spPCAFilename="pca.yml";
+	spConfig->spNumOfFeatures=100;
+	spConfig->spExtractionMode=true;
+	spConfig->spMinimalGUI=false;
+	spConfig->spNumOfSimilarImages=1;
+	spConfig->spKNN=1;
+	spConfig->spKDTreeSplitMethod=MAX_SPREAD;
+	spConfig->spLoggerLevel=3;
+	spConfig->spLoggerFilename="stdout";
+
 
 	while (fgets(line,1024,configFile) != NULL)
 	{
-		varIndex=0;valIndex=0;
+
 		if(line[0]!='#')
 		{
-			for(i=0;i<2014;i++)
+			varIndex=0;valIndex=0;i=0;
+			varOrValue=0;
+			var[0]='\0';
+			value[0]='\0';
+
+			while(line[i]!='\n')
 			{
 				if(line[i]!=' ')
 				{
@@ -65,8 +268,12 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 						{
 							while(line[i+1]==' ')
 								i++;
-							if(line[i+1]!='=')
-								*msg= SP_CONFIG_INVALID_ARGUMENT;
+							if(line[i+1]!='='){
+								*msg= SP_CONFIG_INVALID_STRING;
+								return NULL;
+							}
+
+
 
 						}
 						else
@@ -86,8 +293,11 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 										{
 											while(line[i+1]==' ')
 												i++;
-											if(line[i+1]!='\n')
-												*msg= SP_CONFIG_INVALID_ARGUMENT;
+											if(line[i+1]!='\n'){
+												*msg= SP_CONFIG_INVALID_STRING;
+												return NULL;
+											}
+
 											else{
 												value[valIndex]='\0';
 												break;
@@ -102,17 +312,152 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 
 
 				}
+				i++;
 			}
+			value[valIndex]='\0';
+			setResult=SetConfigValue(var,value,spConfig,&msg);
 
-			SetConfigValue(var,value);
+
+			if(setResult==false){
+				printf("false");
+				return NULL;
+			}
 		}
-		//printf("%s",line);
+	}
+
+	printf("check\n");
+	//check if all set
+	if(spConfig->spImagesDirectory==NULL){
+		*msg=SP_CONFIG_MISSING_DIR;
+		return NULL;
+	}
+	else if(spConfig->spImagesPrefix==NULL){
+		*msg=SP_CONFIG_MISSING_PREFIX;
+		return NULL;
+	}
+	else if(spConfig->spImagesSuffix==NULL){
+				*msg=SP_CONFIG_MISSING_SUFFIX;
+				return NULL;
+			}
+	else if(spConfig->spNumOfImages==NULL){
+				*msg=SP_CONFIG_MISSING_NUM_IMAGES;
+				return NULL;
+			}
+	printf("end\n");
+		*msg=SP_CONFIG_SUCCESS;
+		return spConfig;
+
+}
+bool spConfigIsExtractionMode(const SPConfig config, SP_CONFIG_MSG* msg){
+	if(config==NULL){
+		*msg=SP_CONFIG_INVALID_ARGUMENT;
+		return false;
+	}
+	else {
+		*msg=SP_CONFIG_SUCCESS;
+		return config->spExtractionMode;
+	}
+}
+
+bool spConfigMinimalGui(const SPConfig config, SP_CONFIG_MSG* msg){
+	if(config==NULL){
+		*msg=SP_CONFIG_INVALID_ARGUMENT;
+		return false;
+	}
+	else {
+		*msg=SP_CONFIG_SUCCESS;
+		return config->spMinimalGUI;
+	}
+
+}
+int spConfigGetNumOfImages(const SPConfig config, SP_CONFIG_MSG* msg){
+	if(config==NULL){
+		*msg=SP_CONFIG_INVALID_ARGUMENT;
+		return false;
+	}
+	else {
+		*msg=SP_CONFIG_SUCCESS;
+		return config->spNumOfImages;
+	}
+}
+
+int spConfigGetNumOfFeatures(const SPConfig config, SP_CONFIG_MSG* msg){
+	if(config==NULL){
+		*msg=SP_CONFIG_INVALID_ARGUMENT;
+		return false;
+	}
+	else {
+		*msg=SP_CONFIG_SUCCESS;
+		return (int)config->spNumOfFeatures;
+	}
+
+}
+
+int spConfigGetPCADim(const SPConfig config, SP_CONFIG_MSG* msg){
+	if(config==NULL){
+		*msg=SP_CONFIG_INVALID_ARGUMENT;
+		return false;
+	}
+	else {
+		*msg=SP_CONFIG_SUCCESS;
+		return config->spPCADimension;
+	}
+
+}
+SP_CONFIG_MSG spConfigGetImagePath(char* imagePath, const SPConfig config,
+		int index){
+	char str[15];
+	if(imagePath==NULL || config==NULL){
+		return SP_CONFIG_INVALID_ARGUMENT;
+	}
+	else if(index>=config->spNumOfImages){
+		return SP_CONFIG_INDEX_OUT_OF_RANGE;
+	}
+	else{
+		strcat(imagePath, config->spImagesDirectory);
+		strcat(imagePath, config->spImagesPrefix);
+		sprintf(str, "%d", index);
+		strcat(imagePath, str);
+		strcat(imagePath, config->spImagesSuffix);
+		return SP_CONFIG_SUCCESS;
+
+	}
+
+}
+
+SP_CONFIG_MSG spConfigGetPCAPath(char* pcaPath, const SPConfig config){
+	if(pcaPath==NULL || config==NULL){
+			return SP_CONFIG_INVALID_ARGUMENT;
+		}
+	else{
+		strcat(pcaPath, config->spImagesDirectory);
+		strcat(pcaPath, config->spPCAFilename);
+		return SP_CONFIG_SUCCESS;
+
+	}
+}
+
+void spConfigDestroy(SPConfig config){
+	if(config!=NULL){
+		free(config->spImagesDirectory);
+		free(config->spImagesPrefix);
+		free(config->spImagesSuffix);
+		free(config->spLoggerFilename);
+		free(config->spNumOfFeatures);
+		free(config->spPCAFilename);
+		free(config);
+
 	}
 }
 
 
-void main()
+
+
+
+int main()
 {
 	SP_CONFIG_MSG msg;
 	spConfigCreate("conf.config",&msg);
+	printf("endmain\n");
+	return 0;
 }

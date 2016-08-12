@@ -166,7 +166,7 @@ SP_CONFIG_MSG spConfigGetImagePath(char* imagePath, const SPConfig config,
  *  - SP_CONFIG_INVALID_ARGUMENT - if imagePath == NULL or config == NULL
  *  - SP_CONFIG_SUCCESS - in case of success
  */
-SP_CONFIG_MSG spConfigGetPCAPath(char* pcaPath, const SPConfig config);
+	SP_CONFIG_MSG spConfigGetPCAPath(char* pcaPath, const SPConfig config);
 
 /**
  * Frees all memory resources associate with config. 
