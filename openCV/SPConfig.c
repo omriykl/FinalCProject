@@ -209,6 +209,8 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 	bool setResult;
 	FILE* configFile;
 
+	printf("start");
+
 	if(line==NULL || var==NULL || value==NULL || spConfig==NULL){
 		*msg=SP_CONFIG_ALLOC_FAIL;
 		return NULL;
@@ -319,6 +321,7 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 
 
 			if(setResult==false){
+				spConfigDestroy(spConfig);
 				printf("false");
 				return NULL;
 			}
@@ -329,18 +332,22 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 	//check if all set
 	if(spConfig->spImagesDirectory==NULL){
 		*msg=SP_CONFIG_MISSING_DIR;
+		spConfigDestroy(spConfig);
 		return NULL;
 	}
 	else if(spConfig->spImagesPrefix==NULL){
 		*msg=SP_CONFIG_MISSING_PREFIX;
+		spConfigDestroy(spConfig);
 		return NULL;
 	}
 	else if(spConfig->spImagesSuffix==NULL){
 				*msg=SP_CONFIG_MISSING_SUFFIX;
+				spConfigDestroy(spConfig);
 				return NULL;
 			}
 	else if(spConfig->spNumOfImages==NULL){
 				*msg=SP_CONFIG_MISSING_NUM_IMAGES;
+				spConfigDestroy(spConfig);
 				return NULL;
 			}
 	printf("end\n");
