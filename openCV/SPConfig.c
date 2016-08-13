@@ -12,7 +12,7 @@ struct sp_config_t
 	int spNumOfImages; // the number of images in spImagesDirectory. Constraint: positive integer.
 	int spPCADimension; //we will use this value to reduce the dimension of the SIFT features from 128 to spPCADimension. Constraint: positive integer in the range [10 , 28].
 	char * spPCAFilename; //the filename of the PCA file. Constraint: the string contains no spaces.
-	char * spNumOfFeatures; //the number of features which will be extracted per image. Constraint: positive integer.
+	int spNumOfFeatures; //the number of features which will be extracted per image. Constraint: positive integer.
 	bool spExtractionMode; //a boolean variable which indicates if preprocessing must be done first or if the features are extracted from files (more on this later). Constraint: the value is in the following set { true , false}
 	int spNumOfSimilarImages; //a positive integer which indicates the number of similar images which will be presented given a query image. That is if this parameter is set to 2, the most 2 similar images with respect to a query image will be presented. Constraint: spNumOfSimilarImages>0
 	SP_SPLIT_METHOD spKDTreeSplitMethod; //a parameter which represents the cut method when the kd-tree is build (more later). Constraint: an enum which takes one of the following values {RANDOM, MAX_SPREAD, INCREMENTAL }
@@ -83,18 +83,11 @@ bool SetConfigValue(char * var, char * val,SPConfig spConfig,SP_CONFIG_MSG *msg)
 
 		}
 	else if(strcmp(var,"spNumOfFeatures")==0){
-		i=0;
-				while(val[i]!='\0'){
-					if (val[i]==' '){
-						*msg=SP_CONFIG_INVALID_STRING;
-						return false;
-					}
-					i++;
-				}
-				spConfig->spNumOfFeatures=malloc(sizeof(char)*1024);
-
-				strcpy( spConfig->spNumOfFeatures, val);
-				printf("%s - %s\n",var,val);
+		if(atoi(val)<1){
+							*msg=SP_CONFIG_INVALID_INTEGER;
+							return false;
+						}
+						spConfig->spNumOfFeatures=atoi(val);
 
 			}
 	else if(strcmp(var,"spNumOfImages")==0){
@@ -237,6 +230,7 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 	spConfig->spKDTreeSplitMethod=MAX_SPREAD;
 	spConfig->spLoggerLevel=3;
 	spConfig->spLoggerFilename="stdout";
+	spConfig->spNumOfImages=-1;
 
 
 	while (fgets(line,1024,configFile) != NULL)
@@ -321,7 +315,7 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 				printf("File: %s\n Line: %d\n Message: Invalid configuration line",filename,countLine);
 			}
 			value[valIndex]='\0';
-			setResult=SetConfigValue(var,value,spConfig,&msg);
+			setResult=SetConfigValue(var,value,spConfig,msg);
 
 
 			if(setResult==false){
@@ -353,7 +347,7 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 				spConfigDestroy(spConfig);
 				return NULL;
 			}
-	else if(spConfig->spNumOfImages==NULL){
+	else if(spConfig->spNumOfImages==-1){
 				*msg=SP_CONFIG_MISSING_NUM_IMAGES;
 				printf("File: %s\n Line: %s\n Message: Parameter %s is not set\n",filename,countLine,"spNumOfImages");
 				spConfigDestroy(spConfig);
@@ -459,7 +453,6 @@ void spConfigDestroy(SPConfig config){
 		free(config->spImagesPrefix);
 		free(config->spImagesSuffix);
 		free(config->spLoggerFilename);
-		free(config->spNumOfFeatures);
 		free(config->spPCAFilename);
 		free(config);
 
