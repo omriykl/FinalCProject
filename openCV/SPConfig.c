@@ -67,6 +67,21 @@ bool SetConfigValue(char * var, char * val,SPConfig spConfig,SP_CONFIG_MSG *msg)
 			printf("%s - %s\n",var,val);
 
 		}
+	else if(strcmp(var,"spLoggerFilename")==0){
+			i=0;
+					while(val[i]!='\0'){
+						if (val[i]==' '){
+							*msg=SP_CONFIG_INVALID_STRING;
+							return false;
+						}
+						i++;
+					}
+					spConfig->spLoggerFilename=malloc(sizeof(char)*1024);
+
+				strcpy( spConfig->spLoggerFilename, val);
+				printf("%s - %s\n",var,val);
+
+			}
 	else if(strcmp(var,"spPCAFilename")==0){
 		i=0;
 				while(val[i]!='\0'){
@@ -137,31 +152,31 @@ bool SetConfigValue(char * var, char * val,SPConfig spConfig,SP_CONFIG_MSG *msg)
 					}
 	else if(strcmp(var,"spExtractionMode")==0){
 
-				 if(val[0]=='0'){
-					spConfig->spExtractionMode=false;
-					printf("%s - %s\n",var,val);
-
-				}
-				else if(val[0]=='1'){
+		if(strcmp(val,"true")==0){
 					spConfig->spExtractionMode=true;
 					printf("%s - %s\n",var,val);
 
 				}
+				else if(strcmp(val,"false")==0){
+					spConfig->spExtractionMode=false;
+					printf("%s - %s\n",var,val);
+
+				}
 				else{
-		           *msg=SP_CONFIG_INVALID_INTEGER;
+		           *msg=SP_CONFIG_INVALID_ARGUMENT;
 		        	return false;
 				}
 
 				}
 	else if(strcmp(var,"spMinimalGUI")==0){
 
-					 if(val[0]=='0'){
-						spConfig->spMinimalGUI=false;
+		if(strcmp(val,"true")==0){
+						spConfig->spMinimalGUI=true;
 						printf("%s - %s\n",var,val);
 
 					}
-					else if(val[0]=='1'){
-						spConfig->spMinimalGUI=true;
+		else if(strcmp(val,"false")==0){
+						spConfig->spMinimalGUI=false;
 						printf("%s - %s\n",var,val);
 
 					}
@@ -463,10 +478,10 @@ void spConfigDestroy(SPConfig config){
 
 
 
-//int main()
-//{
-//	SP_CONFIG_MSG msg;
-//	spConfigCreate("conf.config",&msg);
-//	printf("endmain\n");
-//	return 0;
-//}
+int main()
+{
+	SP_CONFIG_MSG msg;
+	spConfigCreate("conf.config",&msg);
+	printf("endmain\n");
+	return 0;
+}
