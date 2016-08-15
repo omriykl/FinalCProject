@@ -79,6 +79,19 @@ double spPointGetAxisCoor(SPPoint point, int axis)
 	return point->data[axis];
 }
 
+double* spPointGetData(SPPoint point)
+{
+	assert(point!=NULL);
+	double *data = (double*) calloc(point->dim,sizeof(double));
+	if (data == NULL)
+	{
+		return NULL;
+	}
+	for (int i = 0; i< point->dim;i++)
+		data[i] = point->data[i];
+	return data;
+}
+
 double spPointL2SquaredDistance(SPPoint p, SPPoint q)
 {
 	assert(p!=NULL && q!=NULL && (p->dim == q->dim));
@@ -92,3 +105,4 @@ double spPointL2SquaredDistance(SPPoint p, SPPoint q)
 	}
 	return dist;
 }
+

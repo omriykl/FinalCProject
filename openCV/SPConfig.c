@@ -463,10 +463,10 @@ void spConfigDestroy(SPConfig config){
 
 
 
-int main()
-{
-	SP_CONFIG_MSG msg;
-	spConfigCreate("conf.config",&msg);
-	printf("endmain\n");
-	return 0;
-}
+//int main()
+//{
+//	SP_CONFIG_MSG msg;
+//	spConfigCreate("conf.config",&msg);
+//	printf("endmain\n");
+//	return 0;
+//}
