@@ -34,6 +34,7 @@ bool SetConfigValue(char * var, char * val,SPConfig spConfig,SP_CONFIG_MSG *msg)
 			}
 			i++;
 		}
+		free(spConfig->spImagesDirectory);
 		spConfig->spImagesDirectory=malloc(sizeof(char)*1024);
 		strcpy( spConfig->spImagesDirectory, val);
 		printf("%s - %s\n",var,val);
@@ -47,6 +48,7 @@ bool SetConfigValue(char * var, char * val,SPConfig spConfig,SP_CONFIG_MSG *msg)
 					}
 					i++;
 				}
+			free(spConfig->spImagesPrefix);
 		spConfig->spImagesPrefix=malloc(sizeof(char)*1024);
 		strcpy( spConfig->spImagesPrefix, val);
 		printf("%s - %s\n",var,val);
@@ -61,6 +63,8 @@ bool SetConfigValue(char * var, char * val,SPConfig spConfig,SP_CONFIG_MSG *msg)
 					}
 					i++;
 				}
+				free(spConfig->spImagesSuffix);
+
 				spConfig->spImagesSuffix=malloc(sizeof(char)*1024);
 
 			strcpy( spConfig->spImagesSuffix, val);
@@ -76,6 +80,8 @@ bool SetConfigValue(char * var, char * val,SPConfig spConfig,SP_CONFIG_MSG *msg)
 						}
 						i++;
 					}
+					free(spConfig->spLoggerFilename);
+
 					spConfig->spLoggerFilename=malloc(sizeof(char)*1024);
 
 				strcpy( spConfig->spLoggerFilename, val);
@@ -91,6 +97,8 @@ bool SetConfigValue(char * var, char * val,SPConfig spConfig,SP_CONFIG_MSG *msg)
 					}
 					i++;
 				}
+				free(spConfig->spPCAFilename);
+
 				spConfig->spPCAFilename=malloc(sizeof(char)*1024);
 
 			strcpy( spConfig->spPCAFilename, val);
@@ -478,10 +486,10 @@ void spConfigDestroy(SPConfig config){
 
 
 
-int main()
-{
-	SP_CONFIG_MSG msg;
-	spConfigCreate("conf.config",&msg);
-	printf("endmain\n");
-	return 0;
-}
+//int main()
+//{
+//	SP_CONFIG_MSG msg;
+//	spConfigCreate("conf.config",&msg);
+//	printf("endmain\n");
+//	return 0;
+//}

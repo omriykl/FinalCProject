@@ -54,22 +54,22 @@ SPPoint * getFeaturesFromFile(char * imgDir,char * imgPre,int index, int * numbe
 	return feats;
 }
 
-void main ()
-{
-	double dt[2]={1.3,4.6};
-	double dt3[3]={1.3,4.6,5.7};
-	SPPoint p[2];
-	p[0] = spPointCreate(dt,2,0);
-	p[1] = spPointCreate(dt3,3,1);
+//void main ()
+//{
+//	double dt[2]={1.3,4.6};
+//	double dt3[3]={1.3,4.6,5.7};
+//	SPPoint p[2];
+//	p[0] = spPointCreate(dt,2,0);
+//	p[1] = spPointCreate(dt3,3,1);
 
 
 //	saveFeaturesToFile("images\\","img",4,p,2);
 
-	int num;
+//	int num;
 
-	SPPoint * points = getFeaturesFromFile("images\\","img",4,&num);
+//	SPPoint * points = getFeaturesFromFile("images\\","img",4,&num);
 
-	printf("\ngot %d",num);
-	printf("\npoint %d",spPointGetDimension(points[1]));
-	printf("\npoint data %f",spPointGetAxisCoor(points[1],2));
-}
+//	printf("\ngot %d",num);
+//	printf("\npoint %d",spPointGetDimension(points[1]));
+//	printf("\npoint data %f",spPointGetAxisCoor(points[1],2));
+//}
