@@ -13,6 +13,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include "SPConfig.h"
+#include "SPListElement.h"
+#include "SPBPriorityQueue.h"
 
 
 struct KD_Tree_Node
@@ -29,11 +31,11 @@ KDTreeNode CreateTreeNode(KDArray kda,SPConfig spConfig,int i){
 	KDTreeNode head=malloc( sizeof(KDTreeNode));
 	int diff;
 	if(kda.size==1){
-		head->Dim=invalid;
-		head->Val=invalid;
+		head->Dim=0//invalid;
+		head->Val=0//invalid;
 		head->Left=NULL;
 		head->Right=NULL;
-		Data->kda[0];
+		head->Data=kda[0];
 	}
 	else{
 		head->Dim=i;
@@ -58,6 +60,18 @@ KDTreeNode CreateTreeNode(KDArray kda,SPConfig spConfig,int i){
 	}
 	return head;
 
+}
+
+void kNearestNeighbors(KDTreeNode curr,SPBPQueue bpq, SPPoint P){
+	double dist;
+	if(curr==NULL){
+		return;
+	}
+
+	if(curr->Left==NULL && curr->Right==NULL){//is leaf
+
+		dist=spPointL2SquaredDistance()
+	}
 }
 
 
