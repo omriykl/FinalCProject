@@ -13,77 +13,26 @@
 #define PROGRAMNAME "SPCBIR"
 
 
-int main()
+int main(int args_num, char** args)
 {
-	char* str=malloc(sizeof(char)*1024);
 
-	char* configName=malloc(sizeof(char)*1024);
 	char* imagePath=malloc(sizeof(char)*1024);
 	char* inputProgramName=malloc(sizeof(char)*1024);
 
-	char* inputC=malloc(sizeof(char)*1024);
 	FILE* configFile;
 	SP_CONFIG_MSG msg;
 	SPConfig config;
 
-	int i=0;
-	int readStatus=0;
-
-
-	scanf("%s", str);
-	while(str[i]!='\n'){
-		if(readStatus==0){
-			if(str[i]==' '){
-				readStatus=1;
-				inputProgramName[i]='\0';
-			}
-			inputProgramName[i]=str[i];
-		}
-		else if(readStatus==1){
-			if(str[i]==' '){
-				readStatus=2;
-				inputC[i]='\0';
-			}
-			inputC[i]=str[i];
-		}
-		else if(readStatus==2){
-			if(str[i]==' ' || str[i]=='\0'){
-				configName[i]='\0';
-
-			}
-			configName[i]=str[i];
-		}
-	i++;
-	}
-	configName[i]='\0';
-
-
-	if(strcmp(inputProgramName,PROGRAMNAME)!=0){
+	if(strcmp(args[1],"-c")!=0){
 		printf("%s","Invalid command line : use -c <config_filename>\n");
-		free(str);
-		free(configName);
-		free(inputC);
 		free(configFile);
 		free(imagePath);
 		return 0;
 	}
-	if(strcmp(inputC,"-c")!=0){
-		printf("%s","Invalid command line : use -c <config_filename>\n");
-		free(str);
-		free(configName);
-		free(inputC);
-		free(configFile);
-		free(imagePath);
-		return 0;
-	}
-	if(readStatus<2){
-		configName="spcbir.config";
-		configFile = fopen(configName,"r");
+	if(args_num<3){
+		configFile = fopen("spcbir.config","r");
 		if(configFile==NULL){
 			printf("%s","The default configuration file spcbir.config couldn’t be open\n");
-			free(str);
-			free(configName);
-			free(inputC);
 			free(configFile);
 			free(imagePath);
 			return 0;
@@ -91,19 +40,16 @@ int main()
 			}
 	}
 	else{
-		configFile = fopen(configName,"r");
+		configFile = fopen(args[2],"r");
 		if(configFile==NULL){
-				printf("%s %s %s","The configuration file ",configName," couldn’t be open\n");
-				free(str);
-				free(configName);
-				free(inputC);
+				printf("%s %s %s","The configuration file ",args[2]," couldn’t be open\n");
 				free(configFile);
 				free(imagePath);
 				return 0;
 		}
 	}
 
-	config= spConfigCreate(configName,&msg);
+	config= spConfigCreate(args[2],&msg);
 	if(config==NULL){
 		return 0;
 		}
@@ -120,9 +66,7 @@ int main()
 	}
 
 	printf("s%","Exiting…\n");
-	free(str);
-	free(configName);
-	free(inputC);
+
 	free(configFile);
 	free(imagePath);
 	spConfigDestroy(config);
