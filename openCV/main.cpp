@@ -1,15 +1,21 @@
 /*
- * SPCBIR.c
+ * main.cpp
  *
- *  Created on: 20 באוג 2016
- *      Author: הילה
+ *  Created on: 27 באוג 2016
+ *      Author: Yom Tov
  */
 
-#include "SPConfig.h"
-#include <stdbool.h>
-#include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
+#include <stdio.h>
+#include <cstdlib> //include c library
+extern "C"{
+//include your own C source files
+#include "SPConfig.h"
+#include "KDTreeBuiler.h"
+#include "SPLogger.h"
+#include "SPImageSearch.h"
+}
+
 #define PROGRAMNAME "SPCBIR"
 
 
@@ -59,7 +65,8 @@ int main(int args_num, char** args)
 	while(strcmp(imagePath,"<>")!=0){
 
 
-
+		//TODO: ...
+		GetSimilarImages(config->spNumOfSimilarImages,config->spImagesDirectory,imagePath);
 
 		printf("s%","Please enter an image path:\n");
 		scanf("%s", imagePath);
@@ -72,4 +79,7 @@ int main(int args_num, char** args)
 	spConfigDestroy(config);
 	return 0;
 }
+
+
+
 

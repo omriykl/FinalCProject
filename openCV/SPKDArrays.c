@@ -8,6 +8,8 @@
 struct sp_kdarray_t {
 	SPPoint* points;
 	int** matrix;
+	int numOfDims;
+	int numOfPoints;
 };
 
 struct indexPlusVal
@@ -33,7 +35,7 @@ SPKDArray init(SPPoint* arr, int size)
 	SPKDArray kdArr = (SPKDArray) malloc(sizeof(*kdArr));
 	if (kdArr == NULL)
 		return NULL;
-
+	kdArr->numOfPoints=size;
 	kdArr->points = malloc(sizeof(SPPoint)*size);
 	if (kdArr->points == NULL)
 	{
@@ -49,6 +51,8 @@ SPKDArray init(SPPoint* arr, int size)
 	}
 
 	dim = spPointGetDimension(arr[0]);
+	kdArr->numOfDims=dim;
+
 	kdArr->matrix = (int**) malloc(dim*sizeof(int*));
 	//TODO: check allocation
 	for (i=0;i<dim;i++)
@@ -74,6 +78,18 @@ SPKDArray init(SPPoint* arr, int size)
 	}
 
 
+}
+
+SPKDArrayDestroy(SPKDArray arr){
+	int i;
+	for(i=0;i<arr->numOfPoints;i++){
+		spPointDestroy(arr->points[i]);
+	}
+	free(arr->points);
+	for(i=0;i<arr->numOfDims;i++){
+		free(arr->matrix[i]);
+	}
+	free(arr->matrix);
 }
 
 void main()
