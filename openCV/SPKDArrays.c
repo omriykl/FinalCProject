@@ -32,6 +32,7 @@ SPKDArray init(SPPoint* arr, int size)
 {
 	int i,j;
 	int dim;
+	struct indexPlusVal* vals;
 	SPKDArray kdArr = (SPKDArray) malloc(sizeof(*kdArr));
 	if (kdArr == NULL)
 		return NULL;
@@ -57,7 +58,7 @@ SPKDArray init(SPPoint* arr, int size)
 	//TODO: check allocation
 	for (i=0;i<dim;i++)
 	{
-		struct indexPlusVal* vals = malloc(sizeof(struct indexPlusVal)*size);
+		vals = malloc(sizeof(struct indexPlusVal)*size);
 		for (j=0;j<size;j++)
 		{
 			vals[j].index = j;
@@ -74,10 +75,9 @@ SPKDArray init(SPPoint* arr, int size)
 		}
 
 		free(vals);
-
 	}
 
-
+	return kdArr;
 }
 
 SPKDArrayDestroy(SPKDArray arr){
@@ -94,5 +94,24 @@ SPKDArrayDestroy(SPKDArray arr){
 
 void main()
 {
+	double data1[3]={1.3,4.6,5.3};
+	double data2[3]={5.3,5.6,5.1};
+	SPPoint p[2];
+	p[0]= spPointCreate(data1,3,0);
+	p[1]= spPointCreate(data2,3,1);
+
+	SPKDArray kdAr = init(p,2);
+
+	int i,j;
+
+	for (i=0;i<3;i++)
+	{
+		printf("[");
+		for (j=0;j<2;j++)
+		{
+			printf("%d , ",kdAr->matrix[i][j]);
+		}
+		printf("]\n");
+	}
 
 }
