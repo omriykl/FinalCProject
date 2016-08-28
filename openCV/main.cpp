@@ -22,8 +22,7 @@ extern "C"{
 int main(int args_num, char** args)
 {
 
-	char* imagePath=malloc(sizeof(char)*1024);
-	char* inputProgramName=malloc(sizeof(char)*1024);
+	char* imagePath=(char*)malloc(sizeof(char)*1024);
 
 	FILE* configFile;
 	SP_CONFIG_MSG msg;
@@ -59,18 +58,22 @@ int main(int args_num, char** args)
 	if(config==NULL){
 		return 0;
 		}
-
-	printf("s%","Please enter an image path:\n");
-	scanf("%s", imagePath);
-	while(strcmp(imagePath,"<>")!=0){
-
-
-		//TODO: ...
-		GetSimilarImages(config->spNumOfSimilarImages,config->spImagesDirectory,imagePath);
+	else{
 
 		printf("s%","Please enter an image path:\n");
 		scanf("%s", imagePath);
+		while(strcmp(imagePath,"<>")!=0){
+
+
+			//TODO: ...
+			GetSimilarImages(config->spNumOfSimilarImages,config->spImagesDirectory,imagePath);
+
+			printf("s%","Please enter an image path:\n");
+			scanf("%s", imagePath);
+		}
 	}
+
+
 
 	printf("s%","Exiting…\n");
 

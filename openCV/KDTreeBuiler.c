@@ -15,6 +15,7 @@
 #include "SPConfig.h"
 #include "SPListElement.h"
 #include "SPBPriorityQueue.h"
+#include <time.h>
 
 
 struct KD_Tree_Node
@@ -31,8 +32,10 @@ int cmpFuncByVals (const void * a, const void * b)
 	 SPListElement * a1 = ( SPListElement *) a;
 	 SPListElement * b1 = ( SPListElement *) b;
 
-	if (a1->value > b1->value)//sort from big to small then by lowest dim
+	 //sort from big to small then by lowest dim
+	if (a1->value > b1->value){
 		return -1;
+	}
 	else if(a1->value == b1->value){
 		if(a1->index < b1->index){
 			return -1;
@@ -42,7 +45,7 @@ int cmpFuncByVals (const void * a, const void * b)
 }
 
 KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim){
-	KDTreeNode head=malloc( sizeof(KDTreeNode));
+	KDTreeNode head=(KDTreeNode)malloc( sizeof(KDTreeNode));
 	SPListElement* allDimsDiff=(SPListElement*)malloc(sizeof(SPListElement)*(kda->numOfDims));
 	SPKDArray* splitReturn;
 
@@ -60,7 +63,7 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim){
 	}
 	else{
 
-		if(spConfig.spKDTreeSplitMethod== MAX_SPREAD){
+		if(spConfig->spKDTreeSplitMethod== MAX_SPREAD){
 
 			for(i=0;i<kda->numOfDims;i++){
 				min=kda->points[0].data[i];
@@ -87,7 +90,7 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim){
 			head->Right=CreateTreeNode(splitReturn[1],spConfig,incNextDim+1);
 
 		}
-		else if(spConfig.spKDTreeSplitMethod== RANDOM){
+		else if(spConfig->spKDTreeSplitMethod== RANDOM){
 			srand((unsigned) time(&t));
 			dimToSplitBy=rand()%kda->numOfDims;
 
@@ -102,7 +105,7 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim){
 			head->Right=CreateTreeNode(splitReturn[1],spConfig,incNextDim+1);
 
 		}
-		else if(spConfig.spKDTreeSplitMethod== INCREMENTAL ){
+		else if(spConfig->spKDTreeSplitMethod== INCREMENTAL ){
 			dimToSplitBy=(incNextDim)%kda->numOfDims;
 
 			head->Dim=dimToSplitBy;

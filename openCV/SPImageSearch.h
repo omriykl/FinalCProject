@@ -8,8 +8,8 @@
 #ifndef SPIMAGESEARCH_H_
 #define SPIMAGESEARCH_H_
 
+char * GetSimilarImages(int spNumOfSimilarImages,char * spImagesDirectory,char * imagePath);
 
 
 #endif /* SPIMAGESEARCH_H_ */
 
-char * GetSimilarImages(int spNumOfSimilarImages,char * spImagesDirectory,char * imagePath);
