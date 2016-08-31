@@ -33,11 +33,11 @@ int cmpFuncByVals (const void * a, const void * b)
 	 SPListElement * b1 = ( SPListElement *) b;
 
 	 //sort from big to small then by lowest dim
-	if (a1->value > b1->value){
+	if (spListElementGetValue(*a1) > spListElementGetValue(*b1)){
 		return -1;
 	}
-	else if(a1->value == b1->value){
-		if(a1->index < b1->index){
+	else if(spListElementGetValue(*a1) == spListElementGetValue(*b1)){
+		if(spListElementGetIndex(*a1) < spListElementGetIndex(*b1)){
 			return -1;
 		}
 	}

@@ -80,6 +80,49 @@ SPKDArray init(SPPoint* arr, int size)
 	return kdArr;
 }
 
+SPKDArray * split(SPKDArray kdArr, int coor)
+{
+	SPKDArray left,right;
+	SPKDArray * leftAndRight;
+	int i,j;
+	int middle = kdArr->numOfPoints / 2;
+	SPPoint * leftPoints;
+	SPPoint * rightPoints;
+	int* x;
+	int* map1;
+	int* map2;
+
+	//start allocation of x,map1,map2
+	x = (int*) malloc(sizeof(int) * kdArr->numOfPoints);
+	if (x == NULL)
+		return NULL; //TODO: log error
+	map1 = (int*) malloc(sizeof(int) * kdArr->numOfPoints);
+	if (map1 == NULL)
+	{
+		free(x);
+		return NULL; //TODO: log error
+	}
+	map2 = (int*) malloc(sizeof(int) * kdArr->numOfPoints);
+	if (map2 == NULL)
+	{
+		free(x);
+		free(map1);
+		return NULL; //TODO: log error
+	}
+
+	//calculation of x, which will hold 0 if index i of x is in left side, or 1 if it's in thr right side
+	for (i=0;i<middle;i++)
+		x[kdArr->matrix[coor][i]] = 0;
+	for (i=middle;i<kdArr->numOfPoints;i++)
+		x[kdArr->matrix[coor][i]] = 1;
+
+	for (i=0;i<kdArr->numOfPoints;i++)
+		printf("%d = %d\n",i,x[i]);
+
+	return NULL;
+
+}
+
 SPKDArrayDestroy(SPKDArray arr){
 	int i;
 	for(i=0;i<arr->numOfPoints;i++){
@@ -113,5 +156,7 @@ void main()
 		}
 		printf("]\n");
 	}
+
+	split(kdAr,0);
 
 }
