@@ -61,7 +61,7 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim){
 		head->Val=-1;//invalid;
 		head->Left=NULL;
 		head->Right=NULL;
-		head->Data=(SPPoint*)points;
+		head->Data=points;
 	}
 	else{
 
