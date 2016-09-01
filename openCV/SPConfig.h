@@ -174,4 +174,13 @@ SP_CONFIG_MSG spConfigGetImagePath(char* imagePath, const SPConfig config,
  */
 void spConfigDestroy(SPConfig config);
 
+SP_SPLIT_METHOD spConfigeGetSplitMethod(SPConfig config);
+
+int spConfigGetspKNN(SPConfig config);
+
+char* spConfigGetImagesDirectory(SPConfig config);
+
+int  spConfigGetspNumOfSimilarImages(SPConfig config);
+
+
 #endif /* SPCONFIG_H_ */

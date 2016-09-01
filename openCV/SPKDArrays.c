@@ -122,8 +122,23 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 	return NULL;
 
 }
+int SPKDArrayGetNumOfPoints(SPKDArray arr){
+	return arr->numOfPoints;
+}
+int SPKDArrayGetNumOfDims(SPKDArray arr){
+	return arr->numOfDims;
+}
 
-SPKDArrayDestroy(SPKDArray arr){
+SPPoint* SPKDArrayGetpoints(SPKDArray arr){
+	return arr->points;
+}
+
+int** SPKDArrayGetMatrix(SPKDArray arr){
+	return arr->matrix;
+}
+
+
+void SPKDArrayDestroy(SPKDArray arr){
 	int i;
 	for(i=0;i<arr->numOfPoints;i++){
 		spPointDestroy(arr->points[i]);
@@ -135,28 +150,28 @@ SPKDArrayDestroy(SPKDArray arr){
 	free(arr->matrix);
 }
 
-void main()
-{
-	double data1[3]={1.3,4.6,5.3};
-	double data2[3]={5.3,5.6,5.1};
-	SPPoint p[2];
-	p[0]= spPointCreate(data1,3,0);
-	p[1]= spPointCreate(data2,3,1);
-
-	SPKDArray kdAr = init(p,2);
-
-	int i,j;
-
-	for (i=0;i<3;i++)
-	{
-		printf("[");
-		for (j=0;j<2;j++)
-		{
-			printf("%d , ",kdAr->matrix[i][j]);
-		}
-		printf("]\n");
-	}
-
-	split(kdAr,0);
-
-}
+//void main()
+//{
+//	double data1[3]={1.3,4.6,5.3};
+//	double data2[3]={5.3,5.6,5.1};
+//	SPPoint p[2];
+//	p[0]= spPointCreate(data1,3,0);
+//	p[1]= spPointCreate(data2,3,1);
+//
+//	SPKDArray kdAr = init(p,2);
+//
+//	int i,j;
+//
+//	for (i=0;i<3;i++)
+//	{
+//		printf("[");
+//		for (j=0;j<2;j++)
+//		{
+//			printf("%d , ",kdAr->matrix[i][j]);
+//		}
+//		printf("]\n");
+//	}
+//
+//	split(kdAr,0);
+//
+//}

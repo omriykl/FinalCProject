@@ -406,7 +406,7 @@ bool spConfigMinimalGui(const SPConfig config, SP_CONFIG_MSG* msg){
 int spConfigGetNumOfImages(const SPConfig config, SP_CONFIG_MSG* msg){
 	if(config==NULL){
 		*msg=SP_CONFIG_INVALID_ARGUMENT;
-		return false;
+		return -1;
 	}
 	else {
 		*msg=SP_CONFIG_SUCCESS;
@@ -429,7 +429,7 @@ int spConfigGetNumOfFeatures(const SPConfig config, SP_CONFIG_MSG* msg){
 int spConfigGetPCADim(const SPConfig config, SP_CONFIG_MSG* msg){
 	if(config==NULL){
 		*msg=SP_CONFIG_INVALID_ARGUMENT;
-		return false;
+		return -1;
 	}
 	else {
 		*msg=SP_CONFIG_SUCCESS;
@@ -437,6 +437,25 @@ int spConfigGetPCADim(const SPConfig config, SP_CONFIG_MSG* msg){
 	}
 
 }
+
+SP_SPLIT_METHOD spConfigeGetSplitMethod(SPConfig config){
+	return config->spKDTreeSplitMethod;
+}
+
+int spConfigGetspKNN(SPConfig config){
+	return config->spKNN;
+}
+
+char* spConfigGetImagesDirectory(SPConfig config){
+	return config->spImagesDirectory;
+}
+
+int  spConfigGetspNumOfSimilarImages(SPConfig config){
+	return config->spNumOfSimilarImages;
+}
+
+
+
 SP_CONFIG_MSG spConfigGetImagePath(char* imagePath, const SPConfig config,
 		int index){
 	char str[15];

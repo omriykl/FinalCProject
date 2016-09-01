@@ -66,7 +66,7 @@ int main(int args_num, char** args)
 
 
 			//TODO: ...
-			GetSimilarImages(config->spNumOfSimilarImages,config->spImagesDirectory,imagePath);
+			GetSimilarImages(spConfigGetspNumOfSimilarImages(config),spConfigGetImagesDirectory(config),imagePath);
 
 			printf("s%","Please enter an image path:\n");
 			scanf("%s", imagePath);
