@@ -46,7 +46,7 @@ SPPoint * getFeaturesFromFile(char * imgDir,char * imgPre,int index, int * numbe
 		data = calloc(dim,sizeof(double));
 		fread(data,sizeof(double),dim,file);
 		feats = realloc(feats,sizeof(*feats)*(i+1));
-		feats[i] = spPointCreate(data,dim,i);
+		feats[i] = spPointCreate(data,dim,index);
 		i++;
 	}
 
