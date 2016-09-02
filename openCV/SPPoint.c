@@ -11,7 +11,11 @@ struct sp_point_t {
 
 SPPoint spPointCreate(double* data, int dim, int index)
 {
-	SPPoint point = (SPPoint) malloc(sizeof(*point));
+	SPPoint point;
+	if(dim<=0 || index<=0 || data==NULL){
+		return NULL;
+	}
+	point = (SPPoint) malloc(sizeof(*point));
 	if (point == NULL)
 		return NULL;
 
@@ -53,12 +57,10 @@ SPPoint spPointCopy(SPPoint source)
 
 void spPointDestroy(SPPoint point)
 {
-	if (point == NULL)
-		return;
-
-	free(point->data);
-	free(point);
-	return;
+	if (point != NULL){
+		free(point->data);
+		free(point);
+	}
 }
 
 int spPointGetDimension(SPPoint point)
