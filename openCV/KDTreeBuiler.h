@@ -22,3 +22,7 @@ typedef struct KD_Tree_Node* KDTreeNode;
 KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim);
 
 SPBPQueue FindkNearestNeighbors(KDTreeNode curr,SPPoint P,SPConfig conf);
+
+KDTreeNode CreateTreeFromArray(SPKDArray kda,SPConfig spConfig);
+
+void KDTreeDestroy(KDTreeNode node);

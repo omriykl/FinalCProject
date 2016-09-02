@@ -21,7 +21,7 @@
 struct KD_Tree_Node
 {
 	 int Dim ;// = The splitting dimension
-	 int Val;// = The median value of the splitting dimension
+	 double Val;// = The median value of the splitting dimension
 	 KDTreeNode* Left;// Pointer to the left subtree
 	 KDTreeNode* Right;// Pointer to the right subtree
 	 SPPoint Data;//Pointer to a point (only if the current node is a leaf) otherwise this field value is NULL
@@ -44,6 +44,12 @@ int cmpFuncSPListElementByVals (const void * a, const void * b)
 	return 1;
 }
 
+
+KDTreeNode CreateTreeFromArray(SPKDArray kda,SPConfig spConfig){
+	return CreateTreeNode(kda,spConfig,0);
+}
+
+
 KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim){
 	KDTreeNode head=(KDTreeNode)malloc( sizeof(KDTreeNode));
 	SPKDArray* splitReturn=NULL;
@@ -61,7 +67,7 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim){
 		head->Val=-1;//invalid;
 		head->Left=NULL;
 		head->Right=NULL;
-		head->Data=points;
+		head->Data=points[0];
 	}
 	else{
 
@@ -87,44 +93,28 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim){
 
 			dimToSplitBy = spListElementGetIndex(allDimsDiff[0]);
 
-			head->Dim=dimToSplitBy;
-			head->Data=NULL;
-
-			splitReturn=split(kda, dimToSplitBy);
-			head->Val=NULL;//?????;
-			head->Left=CreateTreeNode(splitReturn[0],spConfig,incNextDim+1);
-			head->Right=CreateTreeNode(splitReturn[1],spConfig,incNextDim+1);
-
 		}
 		else if(spConfigeGetSplitMethod(spConfig)== RANDOM){
 			srand((unsigned) time(&t));
 			dimToSplitBy=rand()%numOfDims;
 
-			head->Dim=dimToSplitBy;
-			head->Data=NULL;
-
-			splitReturn=split(kda, dimToSplitBy);
-
-			head->Val=NULL;//??????
-
-			head->Left=CreateTreeNode(splitReturn[0],spConfig,incNextDim+1);
-			head->Right=CreateTreeNode(splitReturn[1],spConfig,incNextDim+1);
-
 		}
 		else if(spConfigeGetSplitMethod(spConfig)== INCREMENTAL ){
 
 			dimToSplitBy=(incNextDim)%numOfDims;
-
-			head->Dim=dimToSplitBy;
-			head->Data=NULL;
-
-			splitReturn=split(kda, dimToSplitBy);
-
-			head->Val=NULL;//??????
-
-			head->Left=CreateTreeNode(splitReturn[0],spConfig,incNextDim+1);
-			head->Right=CreateTreeNode(splitReturn[1],spConfig,incNextDim+1);
 		}
+
+		head->Dim=dimToSplitBy;
+		head->Data=NULL;
+
+		splitReturn=split(kda, dimToSplitBy);
+
+		//the value of the coor of the most right point in the left array
+		head->Val=spPointGetAxisCoor(KDArrayGetTheMostRightValue(splitReturn[0]),dimToSplitBy);
+
+		head->Left=CreateTreeNode(splitReturn[0],spConfig,incNextDim+1);
+		head->Right=CreateTreeNode(splitReturn[1],spConfig,incNextDim+1);
+
 
 	}
 	//FREE
@@ -153,7 +143,6 @@ KDTreeNode* KDTreeNodeGetRight(KDTreeNode node){
 
 SPBPQueue FindkNearestNeighbors(KDTreeNode curr,SPPoint P,SPConfig conf){
 	SPBPQueue bpq = spBPQueueCreate(spConfigGetspKNN(conf));
-
       kNearestNeighbors(curr, bpq,  P);
       return bpq;
 }
@@ -161,7 +150,8 @@ SPBPQueue FindkNearestNeighbors(KDTreeNode curr,SPPoint P,SPConfig conf){
 void kNearestNeighbors(KDTreeNode curr,SPBPQueue bpq, SPPoint P){
 	double dist;
 	SPListElement elem;
-	bool temp;
+	bool sideToSearch;//true = left, false= right
+	bool checkCondition;
 	if(curr==NULL){
 		return;
 	}
@@ -174,16 +164,36 @@ void kNearestNeighbors(KDTreeNode curr,SPBPQueue bpq, SPPoint P){
 		return;
 	}
 	if(spPointGetData(P)[curr->Dim] <= curr->Val){
+		sideToSearch = true;
 		kNearestNeighbors(curr->Left , bpq,  P);
 	}
 	else{
+		sideToSearch= false;
 		kNearestNeighbors(curr->Right , bpq,  P);
 	}
-	//TODO: ??????
-	temp= (pow(curr->Val - spPointGetData(P)[curr->Dim],2)<0);//???
-	if(!spBPQueueIsFull(bpq) || temp){
-		//???
+
+	//check if |curr.val - P[curr.dim]|^2 is less than the priority of the max-priority element of bpq
+	checkCondition= (pow(curr->Val - spPointGetData(P)[curr->Dim],2) < spBPQueueMaxValue(bpq));
+
+	if(!spBPQueueIsFull(bpq) || checkCondition){
+		if(sideToSearch==true){
+			kNearestNeighbors(curr->Right , bpq,  P);
+		}
+		else{
+			kNearestNeighbors(curr->Left , bpq,  P);
+		}
 	}
+}
+
+void KDTreeDestroy(KDTreeNode node){
+	spPointDestroy(node->Data);
+	if(node->Left!=NULL){
+		KDTreeDestroy(node->Left);
+	}
+	if(node->Right!=NULL){
+			KDTreeDestroy(node->Right);
+		}
+	free(node);
 }
 
 

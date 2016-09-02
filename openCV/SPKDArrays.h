@@ -18,6 +18,8 @@ SPPoint* SPKDArrayGetpoints(SPKDArray arr);
 
 int** SPKDArrayGetMatrix(SPKDArray arr);
 
+SPPoint KDArrayGetTheMostRightValue(SPKDArray arr);
+
 void SPKDArrayDestroy(SPKDArray arr);
 
 #endif /* SPKDARRAYS_H_ */

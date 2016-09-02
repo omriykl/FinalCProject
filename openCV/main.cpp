@@ -11,6 +11,7 @@ extern "C"
 { //include your own C source files
 #include "SPConfig.h"
 #include "KDTreeBuiler.h"
+#include "SPKDArrays.h"
 #include "SPLogger.h"
 #include "SPImageSearch.h"
 #include "SPFeatures.h"
@@ -27,12 +28,19 @@ int main(int args_num, char** args)
 	FILE* configFile;
 	SP_CONFIG_MSG msg;
 	SPConfig config;
-	int i;
+	int i,j,featIndex;
 	int numOfImages;
 	int numOfFeats;
 	int featsFound;
 	char* imagePath;
-	SPPoint ** allImagesFeats;
+	SPPoint ** allImagesFeatsByImg;
+	SPPoint * allImagesFeats;
+	SPKDArray arr;
+	KDTreeNode tree;
+	SPPoint* quaryFeats;
+	SPListElement* imagesFeatsMatchCount;
+	SPBPQueue bpq;
+
 	if (args_num < 2)
 	{
 		printf("%s", "Invalid command line : use -c <config_filename>\n");
@@ -83,7 +91,10 @@ int main(int args_num, char** args)
 		numOfImages = spConfigGetNumOfImages(config, &msg);
 		numOfFeats = spConfigGetNumOfFeatures(config, &msg);
 
-		allImagesFeats = (SPPoint **) malloc(sizeof(SPPoint *) * numOfImages);
+		imagesFeatsMatchCount= (SPListElement*)malloc(sizeof(SPListElement)* numOfImages);
+		allImagesFeatsByImg = (SPPoint **) malloc(sizeof(SPPoint *) * numOfImages);
+		allImagesFeats = (SPPoint *) malloc(sizeof(SPPoint) * numOfImages * numOfFeats);
+		featIndex=0;
 		imagePath = (char*) malloc(sizeof(char) * 1025);
 
 		if (spConfigIsExtractionMode(config, &msg) == true)
@@ -92,11 +103,19 @@ int main(int args_num, char** args)
 			{
 				msg = spConfigGetImagePath(imagePath, config, i);
 				printf("%s\n", imagePath);
-				allImagesFeats[i] = pr.getImageFeatures(imagePath, i,
+				allImagesFeatsByImg[i] = pr.getImageFeatures(imagePath, i,
 						&featsFound);
 				saveFeaturesToFile(spConfigGetImagesDirectory(config),
-						spConfigGetImagesPrefix(config), i, allImagesFeats[i],
+						spConfigGetImagesPrefix(config), i, allImagesFeatsByImg[i],
 						featsFound);
+
+				for(j=0;j<featsFound;j++){
+					allImagesFeats[featIndex]=allImagesFeatsByImg[i][j];
+					featIndex++;
+				}
+
+				imagesFeatsMatchCount[i]= spListElementCreate(i,0);
+
 			}
 		}
 		else
@@ -105,31 +124,73 @@ int main(int args_num, char** args)
 			{
 				msg = spConfigGetImagePath(imagePath, config, i);
 				printf("%s\n", imagePath);
-				allImagesFeats[i] = getFeaturesFromFile(
+				allImagesFeatsByImg[i] = getFeaturesFromFile(
 						spConfigGetImagesDirectory(config),
 						spConfigGetImagesPrefix(config), i, &featsFound);
+
+
+				for(j=0;j<featsFound;j++){
+									allImagesFeats[featIndex]=allImagesFeatsByImg[i][j];
+									featIndex++;
+								}
+
+
+				imagesFeatsMatchCount[i]= spListElementCreate(i,0);
 			}
 		}
 
-		printf("s%", "Please enter an image path:\n");
+
+		arr = init(allImagesFeats,featIndex);
+		tree= CreateTreeFromArray(arr,config);
+
+
+		printf("%s", "Please enter an image path:\n");
 		scanf("%s", imagePath);
 		while (strcmp(imagePath, "<>") != 0)
 		{
 
-			//TODO: ...
-			GetSimilarImages(spConfigGetspNumOfSimilarImages(config),
-					spConfigGetImagesDirectory(config), imagePath);
+			quaryFeats = pr.getImageFeatures(imagePath, i,&featsFound);
 
-			printf("s%", "Please enter an image path:\n");
+			for(i=0;i<featsFound;i++){
+
+				 bpq = FindkNearestNeighbors(tree,quaryFeats[i],config);
+				 for(j=0;j<spBPQueueSize(bpq);j++){
+
+					 imagesFeatsMatchCount[spListElementGetIndex(spBPQueuePeek(bpq))]++;
+					 spBPQueueDequeue(bpq);
+				 }
+				 spBPQueueDestroy(bpq);
+			}
+
+			for(i=0;i<featsFound;i++){
+				spPointDestroy(quaryFeats[i]);
+
+			}
+			free(quaryFeats);
+
+			printf("%s", "Please enter an image path:\n");
 			scanf("%s", imagePath);
 		}
 	}
 
 	printf("%s", "Exiting…\n");
 
+	for(i=0;i<numOfImages;i++){
+		spListElementDestroy(imagesFeatsMatchCount[i]);
+		spPointDestroy(allImagesFeats[i]);
+		for(j=0;j<numOfFeats;j++){
+			spPointDestroy(allImagesFeatsByImg[i][j]);
+		}
+	}
+	free(imagesFeatsMatchCount);
+	free(allImagesFeats);
+	free(allImagesFeatsByImg);
+
+	SPKDArrayDestroy(arr);
+	KDTreeDestroy(tree);
 	free(configFile);
 	free(imagePath);
 	spConfigDestroy(config);
-	return 1;
+	return 0;
 }
 
