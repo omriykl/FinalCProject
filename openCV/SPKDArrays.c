@@ -364,55 +364,55 @@ void SPKDArrayDestroy(SPKDArray arr){
 	free(arr->matrix);
 }
 
-void main()
-{
-	double data1[2]={1,2};
-	double data2[2]={123,70};
-	double data3[2]={2,7};
-	double data4[2]={9,11};
-	double data5[2]={3,4};
-	SPPoint p[5];
-	p[0]= spPointCreate(data1,2,0);
-	p[1]= spPointCreate(data2,2,1);
-	p[2]= spPointCreate(data3,2,2);
-	p[3]= spPointCreate(data4,2,3);
-	p[4]= spPointCreate(data5,2,4);
-
-	SPKDArray kdAr = init(p,5);
-
-	int i,j;
-
-	for (i=0;i<2;i++)
-	{
-		printf("[");
-		for (j=0;j<5;j++)
-		{
-			printf("%d , ",kdAr->matrix[i][j]);
-		}
-		printf("]\n");
-	}
-
-	printf("\n\n");
-	SPKDArray* kdArs = split(kdAr,0);
-
-	for (i=0;i<2;i++)
-	{
-		printf("[");
-		for (j=0;j<3;j++)
-		{
-			printf("%d , ",kdArs[0]->matrix[i][j]);
-		}
-		printf("]\n");
-	}
-
-	for (i=0;i<2;i++)
-	{
-		printf("[");
-		for (j=0;j<2;j++)
-		{
-			printf("%d , ",kdArs[1]->matrix[i][j]);
-		}
-		printf("]\n");
-	}
-
-}
+//void main()
+//{
+//	double data1[2]={1,2};
+//	double data2[2]={123,70};
+//	double data3[2]={2,7};
+//	double data4[2]={9,11};
+//	double data5[2]={3,4};
+//	SPPoint p[5];
+//	p[0]= spPointCreate(data1,2,0);
+//	p[1]= spPointCreate(data2,2,1);
+//	p[2]= spPointCreate(data3,2,2);
+//	p[3]= spPointCreate(data4,2,3);
+//	p[4]= spPointCreate(data5,2,4);
+//
+//	SPKDArray kdAr = init(p,5);
+//
+//	int i,j;
+//
+//	for (i=0;i<2;i++)
+//	{
+//		printf("[");
+//		for (j=0;j<5;j++)
+//		{
+//			printf("%d , ",kdAr->matrix[i][j]);
+//		}
+//		printf("]\n");
+//	}
+//
+//	printf("\n\n");
+//	SPKDArray* kdArs = split(kdAr,0);
+//
+//	for (i=0;i<2;i++)
+//	{
+//		printf("[");
+//		for (j=0;j<3;j++)
+//		{
+//			printf("%d , ",kdArs[0]->matrix[i][j]);
+//		}
+//		printf("]\n");
+//	}
+//
+//	for (i=0;i<2;i++)
+//	{
+//		printf("[");
+//		for (j=0;j<2;j++)
+//		{
+//			printf("%d , ",kdArs[1]->matrix[i][j]);
+//		}
+//		printf("]\n");
+//	}
+//
+//}

@@ -182,5 +182,6 @@ char* spConfigGetImagesDirectory(SPConfig config);
 
 int  spConfigGetspNumOfSimilarImages(SPConfig config);
 
+char* spConfigGetImagesPrefix(SPConfig config);
 
 #endif /* SPCONFIG_H_ */

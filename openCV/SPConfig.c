@@ -489,6 +489,11 @@ SP_CONFIG_MSG spConfigGetPCAPath(char* pcaPath, const SPConfig config){
 	}
 }
 
+char* spConfigGetImagesPrefix(SPConfig config)
+{
+	return config->spImagesPrefix;
+}
+
 void spConfigDestroy(SPConfig config){
 	if(config!=NULL){
 		free(config->spImagesDirectory);
