@@ -515,22 +515,44 @@ int spConfigGetPCADim(const SPConfig config, SP_CONFIG_MSG* msg)
 
 SP_SPLIT_METHOD spConfigeGetSplitMethod(SPConfig config)
 {
+	if (config == NULL)
+		return -1;
 	return config->spKDTreeSplitMethod;
 }
 
 int spConfigGetspKNN(SPConfig config)
 {
+	if (config == NULL)
+		return -1;
 	return config->spKNN;
 }
 
 char* spConfigGetImagesDirectory(SPConfig config)
 {
+	if (config == NULL)
+		return NULL;
 	return config->spImagesDirectory;
 }
 
 int spConfigGetspNumOfSimilarImages(SPConfig config)
 {
+	if (config == NULL)
+		return -1;
 	return config->spNumOfSimilarImages;
+}
+
+SP_LOGGER_LEVEL spConfigGetspLoggerLevel(SPConfig config)
+{
+	if (config == NULL)
+		return -1;
+	return config->spLoggerLevel;
+}
+
+char* spConfigGetspLoggerFilename(SPConfig config)
+{
+	if (config == NULL)
+		return NULL;
+	return config->spLoggerFilename;
 }
 
 SP_CONFIG_MSG spConfigGetImagePath(char* imagePath, const SPConfig config,
@@ -575,6 +597,8 @@ SP_CONFIG_MSG spConfigGetPCAPath(char* pcaPath, const SPConfig config)
 
 char* spConfigGetImagesPrefix(SPConfig config)
 {
+	if (config == NULL)
+		return NULL;
 	return config->spImagesPrefix;
 }
 

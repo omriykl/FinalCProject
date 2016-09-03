@@ -55,6 +55,7 @@ int main(int args_num, char** args)
 	SPPoint * allImagesFeats;
 	SPKDArray arr;
 	KDTreeNode tree;
+	SP_LOGGER_MSG logger;
 	SPPoint* quaryFeats;
 	SPListElement* imagesFeatsMatchCount;
 	SPBPQueue bpq;
@@ -100,24 +101,57 @@ int main(int args_num, char** args)
 	}
 	else
 	{
+		logger = spLoggerCreate(spConfigGetspLoggerFilename(config),spConfigGetspLoggerLevel(config));
+		if(logger!=SP_LOGGER_SUCCESS){
+			spLoggerPrintError("error reading spLoggerCreate",args[2],"main",__LINE__);
+		}
+
 		ImageProc pr = ImageProc(config);
 		numOfImages = spConfigGetNumOfImages(config, &msg);
+		if(msg!=SP_CONFIG_SUCCESS){
+			spLoggerPrintError("error reading spConfigGetNumOfImages",args[2],"main",__LINE__);
+		}
 		numOfFeats = spConfigGetNumOfFeatures(config, &msg);
+		if(msg!=SP_CONFIG_SUCCESS){
+			spLoggerPrintError("error reading spConfigGetNumOfFeatures",args[2],"main",__LINE__);
+				}
 
 		imagesFeatsMatchCount= (SPListElement*)malloc(sizeof(SPListElement)* numOfImages);
+		if(imagesFeatsMatchCount==NULL){
+			spLoggerPrintError("error allocation imagesFeatsMatchCount","","main",__LINE__);
+		}
 		allImagesFeatsByImg = (SPPoint **) malloc(sizeof(SPPoint *) * numOfImages);
+		if(allImagesFeatsByImg==NULL){
+					spLoggerPrintError("error allocation allImagesFeatsByImg","","main",__LINE__);
+				}
 		allImagesFeats = (SPPoint *) malloc(sizeof(SPPoint) * numOfImages * numOfFeats);
+		if(allImagesFeats==NULL){
+					spLoggerPrintError("error allocation allImagesFeats","","main",__LINE__);
+				}
 		featIndex=0;
 		imagePath = (char*) malloc(sizeof(char) * 1025);
+		if(imagePath==NULL){
+					spLoggerPrintError("error allocation imagePath","","main",__LINE__);
+				}
 
 		if (spConfigIsExtractionMode(config, &msg) == true)
 		{
 			for (i = 0; i < numOfImages; i++)
 			{
 				msg = spConfigGetImagePath(imagePath, config, i);
-				printf("%s\n", imagePath);
+
+				if(msg!=SP_CONFIG_SUCCESS){
+						spLoggerPrintError("error reading spConfigGetImagePath",args[2],"main",__LINE__);
+							}
+
 				allImagesFeatsByImg[i] = pr.getImageFeatures(imagePath, i,
 						&featsFound);
+
+				if(allImagesFeatsByImg[i]==NULL){
+								spLoggerPrintError("error with allImagesFeatsByImg[i]","","main",__LINE__);
+							}
+
+
 				saveFeaturesToFile(spConfigGetImagesDirectory(config),
 						spConfigGetImagesPrefix(config), i, allImagesFeatsByImg[i],
 						featsFound);
@@ -129,17 +163,33 @@ int main(int args_num, char** args)
 
 				imagesFeatsMatchCount[i]= spListElementCreate(i,0);
 
+				if(imagesFeatsMatchCount[i]==NULL){
+								spLoggerPrintError("error allocation imagesFeatsMatchCount[i]","","main",__LINE__);
+							}
 			}
 		}
 		else
 		{
+			if(msg!=SP_CONFIG_SUCCESS){
+					spLoggerPrintError("error reading spConfigIsExtractionMode",args[2],"main",__LINE__);
+						}
+
 			for (i = 0; i < numOfImages; i++)
 			{
 				msg = spConfigGetImagePath(imagePath, config, i);
-				printf("%s\n", imagePath);
+
+				if(msg!=SP_CONFIG_SUCCESS){
+						spLoggerPrintError("error reading spConfigGetImagePath",args[2],"main",__LINE__);
+							}
+
 				allImagesFeatsByImg[i] = getFeaturesFromFile(
 						spConfigGetImagesDirectory(config),
 						spConfigGetImagesPrefix(config), i, &featsFound);
+
+				if(allImagesFeatsByImg[i]==NULL){
+										spLoggerPrintError("error with allImagesFeatsByImg[i]","","main",__LINE__);
+									}
+
 
 
 				for(j=0;j<featsFound;j++){
@@ -149,6 +199,10 @@ int main(int args_num, char** args)
 
 
 				imagesFeatsMatchCount[i]= spListElementCreate(i,0);
+
+				if(imagesFeatsMatchCount[i]==NULL){
+									spLoggerPrintError("error allocation imagesFeatsMatchCount[i]","","main",__LINE__);
+								}
 			}
 		}
 

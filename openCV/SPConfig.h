@@ -174,14 +174,50 @@ SP_CONFIG_MSG spConfigGetImagePath(char* imagePath, const SPConfig config,
  */
 void spConfigDestroy(SPConfig config);
 
+
+/**
+ * return spConfigeSplitMethod
+ * If config == NULL return NULL
+ */
+
 SP_SPLIT_METHOD spConfigeGetSplitMethod(SPConfig config);
 
+/**
+ * return spConfigspKNN
+ * If config == NULL return NULL
+ */
 int spConfigGetspKNN(SPConfig config);
 
+/**
+ * return spConfigImagesDirectory
+ * If config == NULL return NULL
+ */
 char* spConfigGetImagesDirectory(SPConfig config);
 
+/**
+ * return spConfigspNumOfSimilarImages
+ * If config == NULL return NULL
+ */
 int  spConfigGetspNumOfSimilarImages(SPConfig config);
 
+/**
+ * return spConfigImagesPrefix
+ * If config == NULL return NULL
+ */
 char* spConfigGetImagesPrefix(SPConfig config);
+
+/**
+ * return spLoggerLevel
+ * If config == NULL return NULL
+ */
+SP_LOGGER_LEVEL spConfigGetspLoggerLevel(SPConfig config);
+
+/**
+ * return spLoggerFilename
+ * If config == NULL return NULL
+ */
+char* spConfigGetspLoggerFilename(SPConfig config);
+
+
 
 #endif /* SPCONFIG_H_ */
