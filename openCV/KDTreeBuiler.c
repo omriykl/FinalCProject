@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include <stdlib.h>
 #include "SPConfig.h"
 #include "SPListElement.h"
@@ -110,13 +111,14 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim){
 		splitReturn=split(kda, dimToSplitBy);
 
 		//the value of the coor of the most right point in the left array
-		head->Val=spPointGetAxisCoor(KDArrayGetTheMostRightValue(splitReturn[0]),dimToSplitBy);
+		head->Val=spPointGetAxisCoor(KDArrayGetTheMostRightPoint(splitReturn[0]),dimToSplitBy);
 
 		head->Left=CreateTreeNode(splitReturn[0],spConfig,incNextDim+1);
 		head->Right=CreateTreeNode(splitReturn[1],spConfig,incNextDim+1);
 
 
 	}
+
 	//FREE
 	for(i=0;i<numOfDims;i++){
 
@@ -141,11 +143,6 @@ KDTreeNode* KDTreeNodeGetRight(KDTreeNode node){
 	return node->Right;
 }
 
-SPBPQueue FindkNearestNeighbors(KDTreeNode curr,SPPoint P,SPConfig conf){
-	SPBPQueue bpq = spBPQueueCreate(spConfigGetspKNN(conf));
-      kNearestNeighbors(curr, bpq,  P);
-      return bpq;
-}
 
 void kNearestNeighbors(KDTreeNode curr,SPBPQueue bpq, SPPoint P){
 	double dist;
@@ -184,6 +181,14 @@ void kNearestNeighbors(KDTreeNode curr,SPBPQueue bpq, SPPoint P){
 		}
 	}
 }
+
+SPBPQueue FindkNearestNeighbors(KDTreeNode curr,SPPoint P,SPConfig conf){
+	SPBPQueue bpq = spBPQueueCreate(spConfigGetspKNN(conf));
+      kNearestNeighbors(curr, bpq,  P);
+      return bpq;
+}
+
+
 
 void KDTreeDestroy(KDTreeNode node){
 	spPointDestroy(node->Data);

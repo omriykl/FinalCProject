@@ -163,9 +163,7 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 		}
 	}
 
-SPPoint KDArrayGetTheMostRightValue(SPKDArray arr){
-	return arr->points[arr->numOfPoints -1];
-}
+
 
 //	printf("\nThe left group: \n");
 //	for (i=0;i<middle;i++)
@@ -353,6 +351,11 @@ SPPoint* SPKDArrayGetpoints(SPKDArray arr){
 
 int** SPKDArrayGetMatrix(SPKDArray arr){
 	return arr->matrix;
+}
+
+
+SPPoint KDArrayGetTheMostRightPoint(SPKDArray arr){
+	return arr->points[arr->numOfPoints -1];
 }
 
 

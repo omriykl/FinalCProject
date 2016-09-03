@@ -13,7 +13,6 @@ extern "C"
 #include "KDTreeBuiler.h"
 #include "SPKDArrays.h"
 #include "SPLogger.h"
-#include "SPImageSearch.h"
 #include "SPFeatures.h"
 #include <string.h>
 }
@@ -45,14 +44,12 @@ int main(int args_num, char** args)
 	if (args_num < 2)
 	{
 		printf("%s", "Invalid command line : use -c <config_filename>\n");
-		free(imagePath);
 		return 0;
 	}
 
 	if (strcmp(args[1], "-c") != 0)
 	{
 		printf("%s", "Invalid command line : use -c <config_filename>\n");
-		free(imagePath);
 		return 0;
 	}
 	if (args_num < 3)
@@ -62,8 +59,6 @@ int main(int args_num, char** args)
 		{
 			printf("%s",
 					"The default configuration file spcbir.config couldn’t be open\n");
-			free(configFile);
-			free(imagePath);
 			return 0;
 
 		}
@@ -75,8 +70,6 @@ int main(int args_num, char** args)
 		{
 			printf("%s %s %s", "The configuration file ", args[2],
 					" couldn’t be open\n");
-			free(configFile);
-			free(imagePath);
 			return 0;
 		}
 	}

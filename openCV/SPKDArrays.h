@@ -18,7 +18,7 @@ SPPoint* SPKDArrayGetpoints(SPKDArray arr);
 
 int** SPKDArrayGetMatrix(SPKDArray arr);
 
-SPPoint KDArrayGetTheMostRightValue(SPKDArray arr);
+SPPoint KDArrayGetTheMostRightPoint(SPKDArray arr);
 
 void SPKDArrayDestroy(SPKDArray arr);
 
