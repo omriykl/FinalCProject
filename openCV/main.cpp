@@ -21,6 +21,25 @@ extern "C"
 
 using namespace sp;
 
+int cmpFuncSPListElementByVals (const void * a, const void * b)
+{
+	 SPListElement * a1 = ( SPListElement *) a;
+	 SPListElement * b1 = ( SPListElement *) b;
+
+	 //sort from big to small then by lowest dim
+	if (spListElementGetValue(*a1) > spListElementGetValue(*b1)){
+		return -1;
+	}
+	else if(spListElementGetValue(*a1) == spListElementGetValue(*b1)){
+		if(spListElementGetIndex(*a1) < spListElementGetIndex(*b1)){
+			return -1;
+		}
+	}
+	return 1;
+}
+
+
+
 int main(int args_num, char** args)
 {
 
@@ -158,9 +177,17 @@ int main(int args_num, char** args)
 				 spBPQueueDestroy(bpq);
 			}
 
+			qsort(imagesFeatsMatchCount,numOfImages,sizeof(SPListElement),cmpFuncSPListElementByVals);
+
+			//TODO: print first spConfigGetspNumOfSimilarImages(config) images from
+			// spListElementGetIndex(imagesFeatsMatchCount[i])
+
+
 			for(i=0;i<featsFound;i++){
 				spPointDestroy(quaryFeats[i]);
-
+			}
+			for(i=0;i<numOfImages;i++){
+				spListElementSetValue(imagesFeatsMatchCount[i],0);
 			}
 			free(quaryFeats);
 
@@ -170,6 +197,8 @@ int main(int args_num, char** args)
 	}
 
 	printf("%s", "Exiting…\n");
+
+	//free all
 
 	for(i=0;i<numOfImages;i++){
 		spListElementDestroy(imagesFeatsMatchCount[i]);
