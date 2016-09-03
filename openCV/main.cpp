@@ -40,6 +40,7 @@ int main(int args_num, char** args)
 	SPPoint* quaryFeats;
 	SPListElement* imagesFeatsMatchCount;
 	SPBPQueue bpq;
+	double val;
 
 	if (args_num < 2)
 	{
@@ -154,9 +155,11 @@ int main(int args_num, char** args)
 			for(i=0;i<featsFound;i++){
 
 				 bpq = FindkNearestNeighbors(tree,quaryFeats[i],config);
-				 for(j=0;j<spBPQueueSize(bpq);j++){
-
-					 imagesFeatsMatchCount[spListElementGetIndex(spBPQueuePeek(bpq))]++;
+				 for(j=0;j<spBPQueueSize(bpq);j++)
+				 {
+					 val = spListElementGetValue(imagesFeatsMatchCount[spListElementGetIndex(spBPQueuePeek(bpq))]);
+					 val = val + 1.0;
+					 spListElementSetValue(imagesFeatsMatchCount[spListElementGetIndex(spBPQueuePeek(bpq))],val);
 					 spBPQueueDequeue(bpq);
 				 }
 				 spBPQueueDestroy(bpq);
