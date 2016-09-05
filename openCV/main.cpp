@@ -38,6 +38,28 @@ int cmpFuncSPListElementByVals (const void * a, const void * b)
 	return 1;
 }
 
+void displayResults(SPConfig config,char *queryImg, char ** images,ImageProc pr)
+{
+	int i;
+	SP_CONFIG_MSG msg;
+
+	if (spConfigMinimalGui(config,&msg))
+	{
+		for (i=0;i<spConfigGetspNumOfSimilarImages(config);i++)
+		{
+			pr.showImage(images[i]);
+		}
+	}
+	else
+	{
+		printf("Best candidates for - %s - are:\n",queryImg);
+		for (i=0;i<spConfigGetspNumOfSimilarImages(config);i++)
+		{
+			printf("%s\n",images[i]);
+		}
+	}
+
+}
 
 
 int main(int args_num, char** args)
@@ -106,7 +128,8 @@ int main(int args_num, char** args)
 			spLoggerPrintError("error reading spLoggerCreate",args[2],"main",__LINE__);
 		}
 
-		ImageProc pr = ImageProc(config);
+		ImageProc pr(config);
+
 		numOfImages = spConfigGetNumOfImages(config, &msg);
 		if(msg!=SP_CONFIG_SUCCESS){
 			spLoggerPrintError("error reading spConfigGetNumOfImages",args[2],"main",__LINE__);
@@ -253,7 +276,6 @@ int main(int args_num, char** args)
 	printf("%s", "Exiting…\n");
 
 	//free all
-
 	for(i=0;i<numOfImages;i++){
 		spListElementDestroy(imagesFeatsMatchCount[i]);
 		spPointDestroy(allImagesFeats[i]);
@@ -270,6 +292,6 @@ int main(int args_num, char** args)
 	free(configFile);
 	free(imagePath);
 	spConfigDestroy(config);
-	return 0;
+	return 1;
 }
 
