@@ -123,6 +123,10 @@ int main(int args_num, char** args)
 	}
 	else
 	{
+		spConfigPrint(config);
+
+
+
 		logger = spLoggerCreate(spConfigGetspLoggerFilename(config),spConfigGetspLoggerLevel(config));
 		if(logger!=SP_LOGGER_SUCCESS){
 			spLoggerPrintError("error reading spLoggerCreate",args[2],"main",__LINE__);
@@ -157,8 +161,11 @@ int main(int args_num, char** args)
 					spLoggerPrintError("error allocation imagePath","","main",__LINE__);
 				}
 
+
 		if (spConfigIsExtractionMode(config, &msg) == true)
 		{
+			printf("spConfigIsExtractionMode");
+
 			for (i = 0; i < numOfImages; i++)
 			{
 				msg = spConfigGetImagePath(imagePath, config, i);

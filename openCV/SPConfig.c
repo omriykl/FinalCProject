@@ -616,6 +616,24 @@ void spConfigDestroy(SPConfig config)
 	}
 }
 
+void spConfigPrint(SPConfig co){
+	printf(" = %s\n",co->spImagesDirectory);
+	printf(" = %s\n",co->spImagesPrefix);
+	printf(" = %s\n",co->spImagesSuffix);
+	printf(" = %s\n",co->spLoggerFilename);
+	printf(" = %s\n",co->spPCAFilename);
+	printf(" = %d\n",co->spKNN);
+	printf(" = %d\n",co->spLoggerLevel);
+	printf(" = %d\n",co->spNumOfFeatures);
+	printf(" = %d\n",co->spNumOfImages);
+	printf(" = %d\n",co->spNumOfSimilarImages);
+	printf(" = %d\n",co->spPCADimension);
+	printf(" = %s\n",co->spKDTreeSplitMethod);
+	printf(" = %s\n",co->spMinimalGUI);
+	printf(" = %s\n",co->spExtractionMode);
+
+}
+
 //int main()
 //{
 //	SP_CONFIG_MSG msg;

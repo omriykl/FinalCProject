@@ -219,5 +219,6 @@ SP_LOGGER_LEVEL spConfigGetspLoggerLevel(SPConfig config);
 char* spConfigGetspLoggerFilename(SPConfig config);
 
 
+void spConfigPrint(SPConfig co);
 
 #endif /* SPCONFIG_H_ */
