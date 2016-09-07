@@ -123,7 +123,7 @@ int main(int args_num, char** args)
 	}
 	else
 	{
-		spConfigPrint(config);
+//		spConfigPrint(config);
 
 
 
@@ -177,10 +177,17 @@ int main(int args_num, char** args)
 				allImagesFeatsByImg[i] = pr.getImageFeatures(imagePath, i,
 						&featsFound);
 
+				SPPoint* featsTest=pr.getImageFeatures(imagePath, i,&featsFound);
+
+			    spPointGetData(*featsTest);
+
+
 				if(allImagesFeatsByImg[i]==NULL){
 								spLoggerPrintError("error with allImagesFeatsByImg[i]","","main",__LINE__);
 							}
 
+				printf("%s",spConfigGetImagesDirectory(config));
+				printf("%s",spConfigGetImagesPrefix(config));
 
 				saveFeaturesToFile(spConfigGetImagesDirectory(config),
 						spConfigGetImagesPrefix(config), i, allImagesFeatsByImg[i],

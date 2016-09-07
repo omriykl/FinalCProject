@@ -118,8 +118,8 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 	for (i=middle;i<kdArr->numOfPoints;i++)
 		x[kdArr->matrix[coor][i]] = 1;
 
-	for (i=0;i<kdArr->numOfPoints;i++) //TODO: remove after testing
-		printf("%d = %d\n",i,x[i]); //TODO: remove after testing
+	//for (i=0;i<kdArr->numOfPoints;i++) //TODO: remove after testing
+		//printf("%d = %d\n",i,x[i]); //TODO: remove after testing
 
 	//allocation of leftPoints and rightPoints
 	leftPoints = (SPPoint*) malloc(sizeof(SPPoint)*middle);

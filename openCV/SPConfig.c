@@ -569,6 +569,7 @@ SP_CONFIG_MSG spConfigGetImagePath(char* imagePath, const SPConfig config,
 	}
 	else
 	{
+		imagePath[0]='\0';
 		strcat(imagePath, config->spImagesDirectory);
 		strcat(imagePath, config->spImagesPrefix);
 		sprintf(str, "%d", index);
