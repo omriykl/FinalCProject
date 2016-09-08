@@ -52,7 +52,7 @@ KDTreeNode CreateTreeFromArray(SPKDArray kda,SPConfig spConfig){
 
 
 KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim){
-	KDTreeNode head=(KDTreeNode)malloc( sizeof(KDTreeNode));
+	KDTreeNode head=(KDTreeNode)malloc( sizeof(*head));
 	SPKDArray* splitReturn=NULL;
 	int i,j,dimToSplitBy;
 	double min,max,temp;
