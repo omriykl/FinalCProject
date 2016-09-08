@@ -23,8 +23,8 @@ struct KD_Tree_Node
 {
 	 int Dim ;// = The splitting dimension
 	 double Val;// = The median value of the splitting dimension
-	 KDTreeNode* Left;// Pointer to the left subtree
-	 KDTreeNode* Right;// Pointer to the right subtree
+	 KDTreeNode Left;// Pointer to the left subtree
+	 KDTreeNode Right;// Pointer to the right subtree
 	 SPPoint Data;//Pointer to a point (only if the current node is a leaf) otherwise this field value is NULL
 };
 
@@ -113,8 +113,8 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim){
 		//the value of the coor of the most right point in the left array
 		head->Val=spPointGetAxisCoor(KDArrayGetTheMostRightPoint(splitReturn[0]),dimToSplitBy);
 
-		*head->Left=CreateTreeNode(splitReturn[0],spConfig,incNextDim+1);
-		*head->Right=CreateTreeNode(splitReturn[1],spConfig,incNextDim+1);
+		head->Left=CreateTreeNode(splitReturn[0],spConfig,incNextDim+1);
+		head->Right=CreateTreeNode(splitReturn[1],spConfig,incNextDim+1);
 
 
 	}
@@ -135,10 +135,10 @@ SPPoint KDTreeNodeGetData(KDTreeNode node){
 	return node->Data;
 }
 
-KDTreeNode* KDTreeNodeGetLeft(KDTreeNode node){
+KDTreeNode KDTreeNodeGetLeft(KDTreeNode node){
 	return node->Left;
 }
-KDTreeNode* KDTreeNodeGetRight(KDTreeNode node){
+KDTreeNode KDTreeNodeGetRight(KDTreeNode node){
 	return node->Right;
 }
 
@@ -161,11 +161,11 @@ void kNearestNeighbors(KDTreeNode curr,SPBPQueue bpq, SPPoint P){
 	}
 	if(spPointGetData(P)[curr->Dim] <= curr->Val){
 		sideToSearch = true;
-		kNearestNeighbors(*curr->Left , bpq,  P);
+		kNearestNeighbors(curr->Left , bpq,  P);
 	}
 	else{
 		sideToSearch= false;
-		kNearestNeighbors(*curr->Right , bpq,  P);
+		kNearestNeighbors(curr->Right , bpq,  P);
 	}
 
 	//check if |curr.val - P[curr.dim]|^2 is less than the priority of the max-priority element of bpq
@@ -173,10 +173,10 @@ void kNearestNeighbors(KDTreeNode curr,SPBPQueue bpq, SPPoint P){
 
 	if(!spBPQueueIsFull(bpq) || checkCondition){
 		if(sideToSearch==true){
-			kNearestNeighbors(*curr->Right , bpq,  P);
+			kNearestNeighbors(curr->Right , bpq,  P);
 		}
 		else{
-			kNearestNeighbors(*curr->Left , bpq,  P);
+			kNearestNeighbors(curr->Left , bpq,  P);
 		}
 	}
 }
@@ -192,11 +192,11 @@ SPBPQueue FindkNearestNeighbors(KDTreeNode curr,SPPoint P,SPConfig conf){
 void KDTreeDestroy(KDTreeNode node){
 	spPointDestroy(node->Data);
 	if(node->Left!=NULL){
-		KDTreeDestroy(*node->Left);
+		KDTreeDestroy(node->Left);
 	}
 	if(node->Right!=NULL){
-			KDTreeDestroy(*node->Right);
-		}
+			KDTreeDestroy(node->Right);
+	}
 	free(node);
 }
 

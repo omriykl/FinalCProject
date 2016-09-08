@@ -123,9 +123,10 @@ int main(int args_num, char** args)
 	}
 	else
 	{
-//		spConfigPrint(config);
+		spConfigPrint(config);
 
-
+		printf("%s", "After config:\n");
+		fflush(NULL);
 
 		logger = spLoggerCreate(spConfigGetspLoggerFilename(config),spConfigGetspLoggerLevel(config));
 		if(logger!=SP_LOGGER_SUCCESS){
@@ -133,6 +134,9 @@ int main(int args_num, char** args)
 		}
 
 		ImageProc pr(config);
+
+		printf("%s", "After ImageProc :\n");
+		fflush(NULL);
 
 		numOfImages = spConfigGetNumOfImages(config, &msg);
 		if(msg!=SP_CONFIG_SUCCESS){
@@ -161,10 +165,10 @@ int main(int args_num, char** args)
 					spLoggerPrintError("error allocation imagePath","","main",__LINE__);
 				}
 
-
+		printf("%s", "After imagePath:\n");
+		fflush(NULL);
 		if (spConfigIsExtractionMode(config, &msg) == true)
 		{
-			printf("spConfigIsExtractionMode");
 
 			for (i = 0; i < numOfImages; i++)
 			{
@@ -186,8 +190,6 @@ int main(int args_num, char** args)
 								spLoggerPrintError("error with allImagesFeatsByImg[i]","","main",__LINE__);
 							}
 
-				printf("%s",spConfigGetImagesDirectory(config));
-				printf("%s",spConfigGetImagesPrefix(config));
 
 				saveFeaturesToFile(spConfigGetImagesDirectory(config),
 						spConfigGetImagesPrefix(config), i, allImagesFeatsByImg[i],
@@ -245,15 +247,26 @@ int main(int args_num, char** args)
 
 
 		arr = init(allImagesFeats,featIndex);
+
+		printf("%s", "After arr:\n");
+				fflush(NULL);
+
 		tree= CreateTreeFromArray(arr,config);
 
+		printf("%s", "After tree:\n");
+				fflush(NULL);
 
 		printf("%s", "Please enter an image path:\n");
 		scanf("%s", imagePath);
+		fflush(NULL);
+
 		while (strcmp(imagePath, "<>") != 0)
 		{
 
 			quaryFeats = pr.getImageFeatures(imagePath, i,&featsFound);
+
+			printf("%s", "After quaryFeats:\n");
+							fflush(NULL);
 
 			for(i=0;i<featsFound;i++){
 
@@ -270,6 +283,8 @@ int main(int args_num, char** args)
 
 			qsort(imagesFeatsMatchCount,numOfImages,sizeof(SPListElement),cmpFuncSPListElementByVals);
 
+			printf("%s", "After qsort:\n");
+										fflush(NULL);
 			//TODO: print first spConfigGetspNumOfSimilarImages(config) images from
 			// spListElementGetIndex(imagesFeatsMatchCount[i])
 

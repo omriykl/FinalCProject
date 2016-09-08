@@ -179,7 +179,6 @@ void spConfigDestroy(SPConfig config);
  * return spConfigeSplitMethod
  * If config == NULL return NULL
  */
-
 SP_SPLIT_METHOD spConfigeGetSplitMethod(SPConfig config);
 
 /**

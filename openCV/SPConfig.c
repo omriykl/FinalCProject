@@ -40,7 +40,12 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 		}
 		free(spConfig->spImagesDirectory);
 		spConfig->spImagesDirectory = malloc(sizeof(char) * 1024);
+		spConfig->spImagesDirectory[0]='\0';
 		strcpy(spConfig->spImagesDirectory, val);
+
+		//TODO fix spImagesDirectory set
+		spConfig->spImagesDirectory="images/";
+
 		printf("%s - %s\n", var, val);
 	}
 	else if (strcmp(var, "spImagesPrefix") == 0)
@@ -57,6 +62,7 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 		}
 		free(spConfig->spImagesPrefix);
 		spConfig->spImagesPrefix = malloc(sizeof(char) * 1024);
+		spConfig->spImagesPrefix[0]='\0';
 		strcpy(spConfig->spImagesPrefix, val);
 		printf("%s - %s\n", var, val);
 
@@ -76,6 +82,7 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 		free(spConfig->spImagesSuffix);
 
 		spConfig->spImagesSuffix = malloc(sizeof(char) * 1024);
+		spConfig->spImagesSuffix[0]='\0';
 
 		strcpy(spConfig->spImagesSuffix, val);
 		printf("%s - %s\n", var, val);
@@ -96,6 +103,7 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 		free(spConfig->spLoggerFilename);
 
 		spConfig->spLoggerFilename = malloc(sizeof(char) * 1024);
+		spConfig->spLoggerFilename[0]='\0';
 
 		strcpy(spConfig->spLoggerFilename, val);
 		printf("%s - %s\n", var, val);
@@ -116,6 +124,7 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 		free(spConfig->spPCAFilename);
 
 		spConfig->spPCAFilename = malloc(sizeof(char) * 1024);
+		spConfig->spPCAFilename[0]='\0';
 
 		strcpy(spConfig->spPCAFilename, val);
 		printf("%s - %s\n", var, val);
@@ -629,9 +638,8 @@ void spConfigPrint(SPConfig co){
 	printf(" = %d\n",co->spNumOfImages);
 	printf(" = %d\n",co->spNumOfSimilarImages);
 	printf(" = %d\n",co->spPCADimension);
-	printf(" = %s\n",co->spKDTreeSplitMethod);
-	printf(" = %s\n",co->spMinimalGUI);
-	printf(" = %s\n",co->spExtractionMode);
+	printf(" = %d\n",co->spMinimalGUI);
+	printf(" = %d\n",co->spExtractionMode);
 
 }
 
