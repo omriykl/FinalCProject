@@ -257,6 +257,7 @@ int main(int args_num, char** args)
 				fflush(NULL);
 
 		printf("%s", "Please enter an image path:\n");
+		fflush(NULL);
 		scanf("%s", imagePath);
 		fflush(NULL);
 
@@ -285,6 +286,7 @@ int main(int args_num, char** args)
 
 			printf("%s", "After qsort:\n");
 										fflush(NULL);
+
 			//TODO: print first spConfigGetspNumOfSimilarImages(config) images from
 			// spListElementGetIndex(imagesFeatsMatchCount[i])
 
