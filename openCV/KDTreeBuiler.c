@@ -124,10 +124,9 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim){
 
 		spListElementDestroy(allDimsDiff[i]);
 	}
-	free(allDimsDiff);
-	SPKDArrayDestroy(splitReturn[0]);
-	SPKDArrayDestroy(splitReturn[1]);
-	free(splitReturn);
+//	free(allDimsDiff);
+//	SPKDArrayDestroy(kda);
+//	free(splitReturn);
 	//free(t);
 	return head;
 
