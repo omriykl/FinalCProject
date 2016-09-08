@@ -82,6 +82,7 @@ int main(int args_num, char** args)
 	SPListElement* imagesFeatsMatchCount;
 	SPBPQueue bpq;
 	double val;
+	char ** imagesFound;
 
 	if (args_num < 2)
 	{
@@ -285,11 +286,19 @@ int main(int args_num, char** args)
 			qsort(imagesFeatsMatchCount,numOfImages,sizeof(SPListElement),cmpFuncSPListElementByVals);
 
 			printf("%s", "After qsort:\n");
-										fflush(NULL);
+			fflush(NULL);
 
-			//TODO: print first spConfigGetspNumOfSimilarImages(config) images from
-			// spListElementGetIndex(imagesFeatsMatchCount[i])
+			imagesFound = (char**) malloc(sizeof(char*)*spConfigGetspNumOfSimilarImages(config));
 
+			for (i=0;i<spConfigGetspNumOfSimilarImages(config);i++)
+			{
+				imagesFound[i] = (char*) malloc(sizeof(char)*1025);
+				spConfigGetImagePath(imagesFound[i],config,spListElementGetIndex(imagesFeatsMatchCount[i]));
+			}
+
+			displayResults(config,imagePath,imagesFound,pr);
+
+			//TODO: free imagesFound
 
 			for(i=0;i<featsFound;i++){
 				spPointDestroy(quaryFeats[i]);
