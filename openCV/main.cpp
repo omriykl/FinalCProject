@@ -68,6 +68,7 @@ int main(int args_num, char** args)
 
 	FILE* configFile;
 	SP_CONFIG_MSG msg;
+	SP_BPQUEUE_MSG bpqMsg;
 	SPConfig config;
 	int i,j,featIndex;
 	int numOfImages;
@@ -81,6 +82,7 @@ int main(int args_num, char** args)
 	SP_LOGGER_MSG logger;
 	SPPoint* quaryFeats;
 	SPListElement* imagesFeatsMatchCount;
+	SPListElement topOfTheBPQ;
 	SPBPQueue bpq;
 	double val;
 	char ** imagesFound;
@@ -183,6 +185,7 @@ int main(int args_num, char** args)
 				allImagesFeatsByImg[i] = pr.getImageFeatures(imagePath, i,
 						&featsFound);
 
+				//todo: what is this?
 				SPPoint* featsTest=pr.getImageFeatures(imagePath, i,&featsFound);
 
 			    spPointGetData(*featsTest);
@@ -276,12 +279,23 @@ int main(int args_num, char** args)
 				 bpq = FindkNearestNeighbors(tree,quaryFeats[i],config);
 				 for(j=0;j<spBPQueueSize(bpq);j++)
 				 {
-					 val = spListElementGetValue(imagesFeatsMatchCount[spListElementGetIndex(spBPQueuePeek(bpq))]);
+					 topOfTheBPQ=imagesFeatsMatchCount[spListElementGetIndex(spBPQueuePeek(bpq))];
+					 val = spListElementGetValue(topOfTheBPQ);
 					 val = val + 1.0;
-					 spListElementSetValue(imagesFeatsMatchCount[spListElementGetIndex(spBPQueuePeek(bpq))],val);
-					 spBPQueueDequeue(bpq);
+					 spListElementSetValue(topOfTheBPQ,val);
+
+					 printf("add 1 to value on index %d\n",spListElementGetIndex(topOfTheBPQ));
+
+					 bpqMsg =spBPQueueDequeue(bpq);
+					 if(bpqMsg!=SP_BPQUEUE_SUCCESS){
+					 					spLoggerPrintError("error with spBPQueueDequeue","main","main",__LINE__);
+					 						}
 				 }
 				 spBPQueueDestroy(bpq);
+			}
+
+			for(i=0;i<numOfImages;i++){
+				printf("before sort image %d value=%d\n",spListElementGetIndex(imagesFeatsMatchCount[i]),spListElementGetValue(imagesFeatsMatchCount[i]));
 			}
 
 			qsort(imagesFeatsMatchCount,numOfImages,sizeof(SPListElement),cmpFuncSPListElementByVals);
