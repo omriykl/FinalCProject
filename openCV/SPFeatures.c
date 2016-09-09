@@ -17,6 +17,11 @@ void saveFeaturesToFile(char * imgDir,char * imgPre,int index,SPPoint * features
 	sprintf(filePath,"%s%s%d.feats",imgDir,imgPre,index);
 	FILE * file = fopen(filePath,"w+");
 
+	if(file==NULL){
+		spLoggerPrintError("error while reading file ","SPFeatures","saveFeaturesToFile",__LINE__);
+		return;
+	}
+
 	for (i=0;i<numberOfFeats;i++)
 	{
 		data = spPointGetData(features[i]);
@@ -24,8 +29,15 @@ void saveFeaturesToFile(char * imgDir,char * imgPre,int index,SPPoint * features
 		fwrite(&dim,sizeof(int),1,file);
 		fwrite(data,sizeof(double),dim,file);
 	}
-	fflush(file);
-	fclose(file);
+	if(fflush(file)==EOF){
+		spLoggerPrintError("error while fflush file ","SPFeatures","saveFeaturesToFile",__LINE__);
+				return;
+	}
+	if(fclose(file)==EOF){
+			spLoggerPrintError("error while close file ","SPFeatures","saveFeaturesToFile",__LINE__);
+					return;
+		}
+
 }
 
 SPPoint * getFeaturesFromFile(char * imgDir,char * imgPre,int index, int * numberOfFeats)
@@ -40,12 +52,16 @@ SPPoint * getFeaturesFromFile(char * imgDir,char * imgPre,int index, int * numbe
 	sprintf(filePath,"%s%s%d.feats",imgDir,imgPre,index);
 
 	FILE * file = fopen(filePath,"r");
+	if(file==NULL){
+			spLoggerPrintError("error while reading file ","SPFeatures","getFeaturesFromFile",__LINE__);
+			return NULL;
+		}
 
 	while (fread(&dim,4,1,file) > 0)
 	{
 		data = calloc(dim,sizeof(double));
 		fread(data,sizeof(double),dim,file);
-		feats = realloc(feats,sizeof(*feats)*(i+1));
+		feats = (SPPoint*)realloc(feats,sizeof(SPPoint)*(i+1));
 		feats[i] = spPointCreate(data,dim,index);
 		i++;
 	}

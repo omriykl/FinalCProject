@@ -13,14 +13,19 @@ SPPoint spPointCreate(double* data, int dim, int index)
 {
 	SPPoint point;
 	if(dim<=0 || index<0 || data==NULL){
+		spLoggerPrintWarning("dim<=0 || index<0 || data==NULL","SPPoint","spPointCreate",__LINE__);
 		return NULL;
 	}
 	point = (SPPoint) malloc(sizeof(*point));
-	if (point == NULL)
+	if (point == NULL){
+		spLoggerPrintError("error while allocation of point","SPPoint","spPointCreate",__LINE__);
 		return NULL;
+	}
+
 
 	point->data = (double*) calloc(dim,sizeof(double));
 	if (point->data == NULL){
+		spLoggerPrintError("error while allocation of data","SPPoint","spPointCreate",__LINE__);
 		free(point);
 		return NULL;
 	}
@@ -38,12 +43,16 @@ SPPoint spPointCopy(SPPoint source)
 	assert(source != NULL);
 
 	SPPoint pointCp = (SPPoint) malloc(sizeof(*pointCp));
-	if (pointCp == NULL)
-		return NULL;
+	if (pointCp == NULL){
+		spLoggerPrintError("error while allocation of pointCp","SPPoint","spPointCopy",__LINE__);
+        return NULL;
+	}
+
 
 	pointCp->data = (double*) calloc(source->dim,sizeof(double));
 	if (pointCp->data == NULL){
-		free(pointCp);
+		spLoggerPrintError("error while allocation of data","SPPoint","spPointCopy",__LINE__);
+		spPointDestroy(pointCp);
 		return NULL;
 	}
 

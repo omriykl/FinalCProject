@@ -39,12 +39,12 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 			i++;
 		}
 		free(spConfig->spImagesDirectory);
-		spConfig->spImagesDirectory = malloc(sizeof(char) * 1024);
-		spConfig->spImagesDirectory[0]='\0';
+		spConfig->spImagesDirectory = malloc(sizeof(char) * 1025);
+		spConfig->spImagesDirectory[0] = '\0';
 		strcpy(spConfig->spImagesDirectory, val);
 
 		//TODO fix spImagesDirectory set
-		spConfig->spImagesDirectory="images/";
+		spConfig->spImagesDirectory = "images/";
 
 		printf("%s - %s\n", var, val);
 	}
@@ -61,8 +61,8 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 			i++;
 		}
 		free(spConfig->spImagesPrefix);
-		spConfig->spImagesPrefix = malloc(sizeof(char) * 1024);
-		spConfig->spImagesPrefix[0]='\0';
+		spConfig->spImagesPrefix = malloc(sizeof(char) * 1025);
+		spConfig->spImagesPrefix[0] = '\0';
 		strcpy(spConfig->spImagesPrefix, val);
 		printf("%s - %s\n", var, val);
 
@@ -81,8 +81,8 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 		}
 		free(spConfig->spImagesSuffix);
 
-		spConfig->spImagesSuffix = malloc(sizeof(char) * 1024);
-		spConfig->spImagesSuffix[0]='\0';
+		spConfig->spImagesSuffix = malloc(sizeof(char) * 1025);
+		spConfig->spImagesSuffix[0] = '\0';
 
 		strcpy(spConfig->spImagesSuffix, val);
 		printf("%s - %s\n", var, val);
@@ -102,8 +102,8 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 		}
 		free(spConfig->spLoggerFilename);
 
-		spConfig->spLoggerFilename = malloc(sizeof(char) * 1024);
-		spConfig->spLoggerFilename[0]='\0';
+		spConfig->spLoggerFilename = malloc(sizeof(char) * 1025);
+		spConfig->spLoggerFilename[0] = '\0';
 
 		strcpy(spConfig->spLoggerFilename, val);
 		printf("%s - %s\n", var, val);
@@ -123,8 +123,8 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 		}
 		free(spConfig->spPCAFilename);
 
-		spConfig->spPCAFilename = malloc(sizeof(char) * 1024);
-		spConfig->spPCAFilename[0]='\0';
+		spConfig->spPCAFilename = malloc(sizeof(char) * 1025);
+		spConfig->spPCAFilename[0] = '\0';
 
 		strcpy(spConfig->spPCAFilename, val);
 		printf("%s - %s\n", var, val);
@@ -261,9 +261,9 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 {
 	SPConfig spConfig = (SPConfig) malloc(sizeof(*spConfig));
-	char *line = malloc(sizeof(char) * 1024);
-	char *var = malloc(sizeof(char) * 1024);
-	char *value = malloc(sizeof(char) * 1024);
+	char *line = malloc(sizeof(char) * 1025);
+	char *var = malloc(sizeof(char) * 1025);
+	char *value = malloc(sizeof(char) * 1025);
 	int varOrValue = 0; //0=nothing yet, 1= var, 2=value;
 	int varIndex = 0;
 	int valIndex = 0;
@@ -578,7 +578,7 @@ SP_CONFIG_MSG spConfigGetImagePath(char* imagePath, const SPConfig config,
 	}
 	else
 	{
-		imagePath[0]='\0';
+		imagePath[0] = '\0';
 		strcat(imagePath, config->spImagesDirectory);
 		strcat(imagePath, config->spImagesPrefix);
 		sprintf(str, "%d", index);
@@ -626,20 +626,21 @@ void spConfigDestroy(SPConfig config)
 	}
 }
 
-void spConfigPrint(SPConfig co){
-	printf(" = %s\n",co->spImagesDirectory);
-	printf(" = %s\n",co->spImagesPrefix);
-	printf(" = %s\n",co->spImagesSuffix);
-	printf(" = %s\n",co->spLoggerFilename);
-	printf(" = %s\n",co->spPCAFilename);
-	printf(" = %d\n",co->spKNN);
-	printf(" = %d\n",co->spLoggerLevel);
-	printf(" = %d\n",co->spNumOfFeatures);
-	printf(" = %d\n",co->spNumOfImages);
-	printf(" = %d\n",co->spNumOfSimilarImages);
-	printf(" = %d\n",co->spPCADimension);
-	printf(" = %d\n",co->spMinimalGUI);
-	printf(" = %d\n",co->spExtractionMode);
+void spConfigPrint(SPConfig co)
+{
+	printf(" = %s\n", co->spImagesDirectory);
+	printf(" = %s\n", co->spImagesPrefix);
+	printf(" = %s\n", co->spImagesSuffix);
+	printf(" = %s\n", co->spLoggerFilename);
+	printf(" = %s\n", co->spPCAFilename);
+	printf(" = %d\n", co->spKNN);
+	printf(" = %d\n", co->spLoggerLevel);
+	printf(" = %d\n", co->spNumOfFeatures);
+	printf(" = %d\n", co->spNumOfImages);
+	printf(" = %d\n", co->spNumOfSimilarImages);
+	printf(" = %d\n", co->spPCADimension);
+	printf(" = %d\n", co->spMinimalGUI);
+	printf(" = %d\n", co->spExtractionMode);
 
 }
 
