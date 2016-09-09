@@ -56,6 +56,7 @@ void displayResults(SPConfig config,char *queryImg, char ** images,ImageProc pr)
 		for (i=0;i<spConfigGetspNumOfSimilarImages(config);i++)
 		{
 			printf("%s\n",images[i]);
+			fflush(NULL);
 		}
 	}
 

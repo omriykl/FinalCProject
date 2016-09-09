@@ -48,7 +48,7 @@ SPPoint * getFeaturesFromFile(char * imgDir,char * imgPre,int index, int * numbe
 	int dim;
 	double * data;
 	int i=0;
-	SPPoint * feats;
+	SPPoint * feats = (SPPoint*) malloc(sizeof(SPPoint)*100); //TODO: get maxNumOfFeats from conf
 
 	sprintf(filePath,"%s%s%d.feats",imgDir,imgPre,index);
 
@@ -62,7 +62,6 @@ SPPoint * getFeaturesFromFile(char * imgDir,char * imgPre,int index, int * numbe
 	{
 		data = calloc(dim,sizeof(double));
 		fread(data,sizeof(double),dim,file);
-		feats = (SPPoint*)realloc(feats,sizeof(SPPoint)*(i+1));
 		feats[i] = spPointCreate(data,dim,index);
 		i++;
 	}
