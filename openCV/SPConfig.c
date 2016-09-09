@@ -44,7 +44,7 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 		strcpy(spConfig->spImagesDirectory, val);
 
 		//TODO fix spImagesDirectory set
-		spConfig->spImagesDirectory = "images/";
+		spConfig->spImagesDirectory = "images2/";
 
 		printf("%s - %s\n", var, val);
 	}

@@ -271,12 +271,16 @@ int main(int args_num, char** args)
 
 			quaryFeats = pr.getImageFeatures(imagePath, i,&featsFound);
 
-			printf("%s", "After quaryFeats:\n");
+			printf("After quaryFeats : featfound=%d:\n",featsFound);
 							fflush(NULL);
+
 
 			for(i=0;i<featsFound;i++){
 
 				 bpq = FindkNearestNeighbors(tree,quaryFeats[i],config);
+
+				 printf("bpq size is %d\n",spBPQueueSize(bpq));
+
 				 for(j=0;j<spBPQueueSize(bpq);j++)
 				 {
 					 topOfTheBPQ=imagesFeatsMatchCount[spListElementGetIndex(spBPQueuePeek(bpq))];
@@ -291,14 +295,19 @@ int main(int args_num, char** args)
 					 					spLoggerPrintError("error with spBPQueueDequeue","main","main",__LINE__);
 					 						}
 				 }
+				 printf("bpq size is %d\n",spBPQueueSize(bpq));
 				 spBPQueueDestroy(bpq);
 			}
 
 			for(i=0;i<numOfImages;i++){
-				printf("before sort image %d value=%d\n",spListElementGetIndex(imagesFeatsMatchCount[i]),spListElementGetValue(imagesFeatsMatchCount[i]));
+				printf("before sort image %d value=%f\n",spListElementGetIndex(imagesFeatsMatchCount[i]),spListElementGetValue(imagesFeatsMatchCount[i]));
 			}
 
 			qsort(imagesFeatsMatchCount,numOfImages,sizeof(SPListElement),cmpFuncSPListElementByVals);
+
+			for(i=0;i<numOfImages;i++){
+						printf("after sort image %d value=%f\n",spListElementGetIndex(imagesFeatsMatchCount[i]),spListElementGetValue(imagesFeatsMatchCount[i]));
+					}
 
 			printf("%s", "After qsort:\n");
 			fflush(NULL);
@@ -319,9 +328,15 @@ int main(int args_num, char** args)
 				spPointDestroy(quaryFeats[i]);
 			}
 			for(i=0;i<numOfImages;i++){
-				spListElementSetValue(imagesFeatsMatchCount[i],0);
+				spListElementSetValue(imagesFeatsMatchCount[i],0.0);
 			}
+			for (i=0;i<spConfigGetspNumOfSimilarImages(config);i++)
+						{
+							free(imagesFound[i]);
+							}
+			free(imagesFound);
 			free(quaryFeats);
+
 
 			printf("%s", "Please enter an image path:\n");
 			scanf("%s", imagePath);
