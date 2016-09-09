@@ -3,6 +3,7 @@
 //#include "SPImageProc.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "SPLogger.h"
 #include <stdbool.h>
 #include <assert.h>
 

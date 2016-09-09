@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include "SPConfig.h"
 #include "SPListElement.h"
+#include "SPLogger.h"
 #include "SPBPriorityQueue.h"
 #include <time.h>
 

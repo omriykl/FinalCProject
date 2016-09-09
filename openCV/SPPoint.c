@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <assert.h>
+#include "SPLogger.h"
 
 struct sp_point_t {
 	int index;
