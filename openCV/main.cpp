@@ -43,6 +43,7 @@ void displayResults(SPConfig config,char *queryImg, char ** images,ImageProc pr)
 	int i;
 	SP_CONFIG_MSG msg;
 
+	//TODO error handling
 	if (spConfigMinimalGui(config,&msg))
 	{
 		for (i=0;i<spConfigGetspNumOfSimilarImages(config);i++)
@@ -128,6 +129,8 @@ int main(int args_num, char** args)
 	else
 	{
 		spConfigPrint(config);
+		spLoggerPrintInfo("After Config Creation");
+
 
 		printf("%s", "After config:\n");
 		fflush(NULL);
@@ -140,6 +143,8 @@ int main(int args_num, char** args)
 		ImageProc pr(config);
 
 		printf("%s", "After ImageProc :\n");
+		spLoggerPrintInfo("After ImageProc Creation");
+
 		fflush(NULL);
 
 		numOfImages = spConfigGetNumOfImages(config, &msg);
@@ -170,6 +175,8 @@ int main(int args_num, char** args)
 				}
 
 		printf("%s", "After imagePath:\n");
+		spLoggerPrintInfo("After imagePath Creation");
+
 		fflush(NULL);
 		if (spConfigIsExtractionMode(config, &msg) == true)
 		{
@@ -252,11 +259,14 @@ int main(int args_num, char** args)
 
 
 		arr = init(allImagesFeats,featIndex);
+		spLoggerPrintInfo("After arr Creation");
 
 		printf("%s", "After arr:\n");
 				fflush(NULL);
 
 		tree= CreateTreeFromArray(arr,config);
+
+		spLoggerPrintInfo("After tree Creation");
 
 		printf("%s", "After tree:\n");
 				fflush(NULL);
@@ -270,6 +280,8 @@ int main(int args_num, char** args)
 		{
 
 			quaryFeats = pr.getImageFeatures(imagePath, i,&featsFound);
+
+			spLoggerPrintInfo("After quaryFeats Creation");
 
 			printf("After quaryFeats : featfound=%d:\n",featsFound);
 							fflush(NULL);
@@ -299,6 +311,8 @@ int main(int args_num, char** args)
 				 spBPQueueDestroy(bpq);
 			}
 
+			spLoggerPrintInfo("Beofore qsort ");
+
 			for(i=0;i<numOfImages;i++){
 				printf("before sort image %d value=%f\n",spListElementGetIndex(imagesFeatsMatchCount[i]),spListElementGetValue(imagesFeatsMatchCount[i]));
 			}
@@ -308,6 +322,8 @@ int main(int args_num, char** args)
 			for(i=0;i<numOfImages;i++){
 						printf("after sort image %d value=%f\n",spListElementGetIndex(imagesFeatsMatchCount[i]),spListElementGetValue(imagesFeatsMatchCount[i]));
 					}
+
+			spLoggerPrintInfo("After qsort ");
 
 			printf("%s", "After qsort:\n");
 			fflush(NULL);

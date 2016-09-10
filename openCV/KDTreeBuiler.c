@@ -48,11 +48,20 @@ int cmpFuncSPListElementByVals (const void * a, const void * b)
 
 
 KDTreeNode CreateTreeFromArray(SPKDArray kda,SPConfig spConfig){
-	return CreateTreeNode(kda,spConfig,0);
+
+	spLoggerPrintDebug("start CreateTreeFromArray",__FILE__, __func__, __LINE__);
+
+	return CreateTreeNode(kda,spConfig,0,spConfigeGetSplitMethod(spConfig));
 }
 
 
-KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim){
+KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim,SP_SPLIT_METHOD method){
+
+	if(kda==NULL || spConfig==NULL || incNextDim<0 || method<0){
+		spLoggerPrintWarning("something is null",__FILE__, __func__, __LINE__);
+		return NULL;
+
+	}
 	KDTreeNode head=(KDTreeNode)malloc( sizeof(*head));
 	if(head==NULL){
 						spLoggerPrintError("error allocation head",__FILE__, __func__, __LINE__);
@@ -64,10 +73,18 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim){
 	int numOfDims=SPKDArrayGetNumOfDims(kda);
 	int numOfPoints=SPKDArrayGetNumOfPoints(kda);
 	SPPoint* points=SPKDArrayGetpoints(kda);
+
+	if(numOfDims<0 || numOfPoints<0 || points==NULL){
+			spLoggerPrintWarning("something is null",__FILE__, __func__, __LINE__);
+			return NULL;
+		}
+
 	SPListElement* allDimsDiff=(SPListElement*)malloc(sizeof(SPListElement)* numOfDims);
 	if(allDimsDiff==NULL){
-							spLoggerPrintError("error allocation allDimsDiff",__FILE__, __func__, __LINE__);
-						}
+			spLoggerPrintError("error allocation allDimsDiff",__FILE__, __func__, __LINE__);
+			return NULL;
+
+	}
 
 	if(numOfPoints==1){
 		head->Dim=-1;//invalid;
@@ -78,21 +95,50 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim){
 	}
 	else{
 
-		if(spConfigeGetSplitMethod(spConfig)== MAX_SPREAD){
+		if(method== MAX_SPREAD){
+
+			if(points[0]==NULL){
+					spLoggerPrintWarning("points[0] in null",__FILE__, __func__, __LINE__);
+					return NULL;
+				}
 
 			for(i=0;i<numOfDims;i++){
 
-				min=spPointGetData(points[0])[i];
-				max=spPointGetData(points[0])[i];
+				if(points[0]==NULL){
+					spLoggerPrintWarning("points[0] in null",__FILE__, __func__, __LINE__);
+					return NULL;
+				}
+				else{
+					min=spPointGetData(points[0])[i];
+					max=spPointGetData(points[0])[i];
+				}
+
+
 
 				for(j=0;j<numOfPoints;j++){
 
-					temp=spPointGetData(points[j])[i];
-					if(temp<min) min=temp;
-					if(temp>max) max=temp;
+					if(points[j]==NULL){
+						spLoggerPrintWarning("points[j] in null",__FILE__, __func__, __LINE__);
+					}
+					else if(spPointGetData(points[j])==NULL){
+						spLoggerPrintWarning("points[j]->data in null",__FILE__, __func__, __LINE__);
+					}
+					else if(spPointGetDimension(points[j])!=numOfDims){
+						spLoggerPrintWarning("points[j]->dims!=numOfDims",__FILE__, __func__, __LINE__);
+					}
+					else{
+						temp=spPointGetData(points[j])[i];
+						if(temp<min) min=temp;
+						if(temp>max) max=temp;
+					}
+
 				}
 
 				allDimsDiff[i]= spListElementCreate(i, max-min);
+
+				if(allDimsDiff[i]==NULL){
+					spLoggerPrintError("error allocation allDimsDiff[i]",__FILE__, __func__, __LINE__);
+				}
 
 			}
 
@@ -100,15 +146,30 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim){
 
 			dimToSplitBy = spListElementGetIndex(allDimsDiff[0]);
 
+			if(dimToSplitBy<0 || dimToSplitBy>numOfDims){
+				spLoggerPrintError("dimToSplitBy<0 || dimToSplitBy>numOfDims",__FILE__, __func__, __LINE__);
+				return NULL;
+			}
+
 		}
-		else if(spConfigeGetSplitMethod(spConfig)== RANDOM){
+		else if(method== RANDOM){
 			srand((unsigned) time(&t));
 			dimToSplitBy=rand()%numOfDims;
 
+			if(dimToSplitBy<0 || dimToSplitBy>numOfDims){
+						spLoggerPrintError("dimToSplitBy<0 || dimToSplitBy>numOfDims",__FILE__, __func__, __LINE__);
+						return NULL;
+			}
+
 		}
-		else if(spConfigeGetSplitMethod(spConfig)== INCREMENTAL ){
+		else if(method== INCREMENTAL ){
 
 			dimToSplitBy=(incNextDim)%numOfDims;
+
+			if(dimToSplitBy<0 || dimToSplitBy>numOfDims){
+						spLoggerPrintError("dimToSplitBy<0 || dimToSplitBy>numOfDims",__FILE__, __func__, __LINE__);
+						return NULL;
+			}
 		}
 
 		head->Dim=dimToSplitBy;
@@ -116,11 +177,20 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim){
 
 		splitReturn=split(kda, dimToSplitBy);
 
+		if(splitReturn==NULL){
+			spLoggerPrintError("splitReturn==NULL",__FILE__, __func__, __LINE__);
+			return NULL;
+		}
+		else if(splitReturn[0]==NULL || splitReturn[1]==NULL){
+			spLoggerPrintError("splitReturn[0 or 1]==NULL",__FILE__, __func__, __LINE__);
+			return NULL;
+		}
+
 		//the value of the coor of the most right point in the left array
 		head->Val=spPointGetAxisCoor(KDArrayGetTheMostRightPoint(splitReturn[0]),dimToSplitBy);
 
-		head->Left=CreateTreeNode(splitReturn[0],spConfig,incNextDim+1);
-		head->Right=CreateTreeNode(splitReturn[1],spConfig,incNextDim+1);
+		head->Left=CreateTreeNode(splitReturn[0],spConfig,incNextDim+1,method);
+		head->Right=CreateTreeNode(splitReturn[1],spConfig,incNextDim+1,method);
 
 
 	}
@@ -128,13 +198,16 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim){
 	//FREE
 	for(i=0;i<numOfDims;i++){
 
-		spListElementDestroy(allDimsDiff[i]);
+//		spListElementDestroy(allDimsDiff[i]);
 	}
-	free(allDimsDiff);
-	SPKDArrayDestroy(kda);
-	free(splitReturn);
+//	free(allDimsDiff);
+//	SPKDArrayDestroy(kda);
+//	free(splitReturn);
 //	free(t);
+
 	return head;
+
+
 
 }
 SPPoint KDTreeNodeGetData(KDTreeNode node){
