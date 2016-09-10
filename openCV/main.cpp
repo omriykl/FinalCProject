@@ -132,8 +132,8 @@ int main(int args_num, char** args)
 		spLoggerPrintInfo("After Config Creation");
 
 
-		printf("%s", "After config:\n");
-		fflush(NULL);
+		//printf("%s", "After config:\n");
+		//fflush(NULL);
 
 		logger = spLoggerCreate(spConfigGetspLoggerFilename(config),spConfigGetspLoggerLevel(config));
 		if(logger!=SP_LOGGER_SUCCESS){
@@ -142,10 +142,10 @@ int main(int args_num, char** args)
 
 		ImageProc pr(config);
 
-		printf("%s", "After ImageProc :\n");
+		//printf("%s", "After ImageProc :\n");
 		spLoggerPrintInfo("After ImageProc Creation");
 
-		fflush(NULL);
+		//fflush(NULL);
 
 		numOfImages = spConfigGetNumOfImages(config, &msg);
 		if(msg!=SP_CONFIG_SUCCESS){
@@ -174,10 +174,10 @@ int main(int args_num, char** args)
 					spLoggerPrintError("error allocation imagePath",__FILE__, __func__, __LINE__);
 				}
 
-		printf("%s", "After imagePath:\n");
+		//printf("%s", "After imagePath:\n");
 		spLoggerPrintInfo("After imagePath Creation");
 
-		fflush(NULL);
+		//fflush(NULL);
 		if (spConfigIsExtractionMode(config, &msg) == true)
 		{
 
@@ -193,9 +193,9 @@ int main(int args_num, char** args)
 						&featsFound);
 
 				//todo: what is this?
-				SPPoint* featsTest=pr.getImageFeatures(imagePath, i,&featsFound);
+				//SPPoint* featsTest=pr.getImageFeatures(imagePath, i,&featsFound);
 
-			    spPointGetData(*featsTest);
+			  //  spPointGetData(*featsTest);
 
 
 				if(allImagesFeatsByImg[i]==NULL){
@@ -261,15 +261,15 @@ int main(int args_num, char** args)
 		arr = init(allImagesFeats,featIndex);
 		spLoggerPrintInfo("After arr Creation");
 
-		printf("%s", "After arr:\n");
-				fflush(NULL);
+		//printf("%s", "After arr:\n");
+			//	fflush(NULL);
 
 		tree= CreateTreeFromArray(arr,config);
 
 		spLoggerPrintInfo("After tree Creation");
 
-		printf("%s", "After tree:\n");
-				fflush(NULL);
+		//printf("%s", "After tree:\n");
+			//	fflush(NULL);
 
 		printf("%s", "Please enter an image path:\n");
 		fflush(NULL);
@@ -291,7 +291,7 @@ int main(int args_num, char** args)
 
 				 bpq = FindkNearestNeighbors(tree,quaryFeats[i],config);
 
-				 printf("bpq size is %d\n",spBPQueueSize(bpq));
+				 //printf("bpq size is %d\n",spBPQueueSize(bpq));
 
 				 for(j=0;j<spBPQueueSize(bpq);j++)
 				 {
@@ -300,14 +300,14 @@ int main(int args_num, char** args)
 					 val = val + 1.0;
 					 spListElementSetValue(topOfTheBPQ,val);
 
-					 printf("add 1 to value on index %d\n",spListElementGetIndex(topOfTheBPQ));
+					 //printf("add 1 to value on index %d\n",spListElementGetIndex(topOfTheBPQ));
 
 					 bpqMsg =spBPQueueDequeue(bpq);
 					 if(bpqMsg!=SP_BPQUEUE_SUCCESS){
 					 					spLoggerPrintError("error with spBPQueueDequeue",__FILE__, __func__, __LINE__);
 					 						}
 				 }
-				 printf("bpq size is %d\n",spBPQueueSize(bpq));
+				 //printf("bpq size is %d\n",spBPQueueSize(bpq));
 				 spBPQueueDestroy(bpq);
 			}
 
