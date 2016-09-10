@@ -55,7 +55,7 @@ KDTreeNode CreateTreeFromArray(SPKDArray kda,SPConfig spConfig){
 KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim){
 	KDTreeNode head=(KDTreeNode)malloc( sizeof(*head));
 	if(head==NULL){
-						spLoggerPrintError("error allocation head","","KDTreeBuiler",__LINE__);
+						spLoggerPrintError("error allocation head",__FILE__, __func__, __LINE__);
 					}
 	SPKDArray* splitReturn=NULL;
 	int i,j,dimToSplitBy;
@@ -66,7 +66,7 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim){
 	SPPoint* points=SPKDArrayGetpoints(kda);
 	SPListElement* allDimsDiff=(SPListElement*)malloc(sizeof(SPListElement)* numOfDims);
 	if(allDimsDiff==NULL){
-							spLoggerPrintError("error allocation allDimsDiff","KDTreeBuiler","CreateTreeNode",__LINE__);
+							spLoggerPrintError("error allocation allDimsDiff",__FILE__, __func__, __LINE__);
 						}
 
 	if(numOfPoints==1){
@@ -130,10 +130,10 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim){
 
 		spListElementDestroy(allDimsDiff[i]);
 	}
-//	free(allDimsDiff);
-//	SPKDArrayDestroy(kda);
-//	free(splitReturn);
-	//free(t);
+	free(allDimsDiff);
+	SPKDArrayDestroy(kda);
+	free(splitReturn);
+//	free(t);
 	return head;
 
 }
@@ -155,7 +155,7 @@ void kNearestNeighbors(KDTreeNode curr,SPBPQueue bpq, SPPoint P){
 	bool sideToSearch;//true = left, false= right
 	bool checkCondition;
 	if(curr==NULL){
-		spLoggerPrintWarning("curr in null","KDTreeBuiler","kNearestNeighbors",__LINE__);
+		spLoggerPrintWarning("curr in null",__FILE__, __func__, __LINE__);
 		return;
 	}
 

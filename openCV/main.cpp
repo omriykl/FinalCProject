@@ -134,7 +134,7 @@ int main(int args_num, char** args)
 
 		logger = spLoggerCreate(spConfigGetspLoggerFilename(config),spConfigGetspLoggerLevel(config));
 		if(logger!=SP_LOGGER_SUCCESS){
-			spLoggerPrintError("error reading spLoggerCreate",args[2],"main",__LINE__);
+			spLoggerPrintError("error reading spLoggerCreate",__FILE__, __func__, __LINE__);
 		}
 
 		ImageProc pr(config);
@@ -144,29 +144,29 @@ int main(int args_num, char** args)
 
 		numOfImages = spConfigGetNumOfImages(config, &msg);
 		if(msg!=SP_CONFIG_SUCCESS){
-			spLoggerPrintError("error reading spConfigGetNumOfImages",args[2],"main",__LINE__);
+			spLoggerPrintError("error reading spConfigGetNumOfImages",__FILE__, __func__, __LINE__);
 		}
 		numOfFeats = spConfigGetNumOfFeatures(config, &msg);
 		if(msg!=SP_CONFIG_SUCCESS){
-			spLoggerPrintError("error reading spConfigGetNumOfFeatures",args[2],"main",__LINE__);
+			spLoggerPrintError("error reading spConfigGetNumOfFeatures",__FILE__, __func__, __LINE__);
 				}
 
 		imagesFeatsMatchCount= (SPListElement*)malloc(sizeof(SPListElement)* numOfImages);
 		if(imagesFeatsMatchCount==NULL){
-			spLoggerPrintError("error allocation imagesFeatsMatchCount","","main",__LINE__);
+			spLoggerPrintError("error allocation imagesFeatsMatchCount",__FILE__, __func__, __LINE__);
 		}
 		allImagesFeatsByImg = (SPPoint **) malloc(sizeof(SPPoint *) * numOfImages);
 		if(allImagesFeatsByImg==NULL){
-					spLoggerPrintError("error allocation allImagesFeatsByImg","","main",__LINE__);
+					spLoggerPrintError("error allocation allImagesFeatsByImg",__FILE__, __func__, __LINE__);
 				}
 		allImagesFeats = (SPPoint *) malloc(sizeof(SPPoint) * numOfImages * numOfFeats);
 		if(allImagesFeats==NULL){
-					spLoggerPrintError("error allocation allImagesFeats","","main",__LINE__);
+					spLoggerPrintError("error allocation allImagesFeats",__FILE__, __func__, __LINE__);
 				}
 		featIndex=0;
 		imagePath = (char*) malloc(sizeof(char) * 1025);
 		if(imagePath==NULL){
-					spLoggerPrintError("error allocation imagePath","","main",__LINE__);
+					spLoggerPrintError("error allocation imagePath",__FILE__, __func__, __LINE__);
 				}
 
 		printf("%s", "After imagePath:\n");
@@ -179,7 +179,7 @@ int main(int args_num, char** args)
 				msg = spConfigGetImagePath(imagePath, config, i);
 
 				if(msg!=SP_CONFIG_SUCCESS){
-						spLoggerPrintError("error reading spConfigGetImagePath",args[2],"main",__LINE__);
+						spLoggerPrintError("error reading spConfigGetImagePath",__FILE__, __func__, __LINE__);
 							}
 
 				allImagesFeatsByImg[i] = pr.getImageFeatures(imagePath, i,
@@ -192,7 +192,7 @@ int main(int args_num, char** args)
 
 
 				if(allImagesFeatsByImg[i]==NULL){
-								spLoggerPrintError("error with allImagesFeatsByImg[i]","","main",__LINE__);
+								spLoggerPrintError("error with allImagesFeatsByImg[i]",__FILE__, __func__, __LINE__);
 							}
 
 
@@ -208,14 +208,14 @@ int main(int args_num, char** args)
 				imagesFeatsMatchCount[i]= spListElementCreate(i,0);
 
 				if(imagesFeatsMatchCount[i]==NULL){
-								spLoggerPrintError("error allocation imagesFeatsMatchCount[i]","","main",__LINE__);
+								spLoggerPrintError("error allocation imagesFeatsMatchCount[i]",__FILE__, __func__, __LINE__);
 							}
 			}
 		}
 		else
 		{
 			if(msg!=SP_CONFIG_SUCCESS){
-					spLoggerPrintError("error reading spConfigIsExtractionMode",args[2],"main",__LINE__);
+					spLoggerPrintError("error reading spConfigIsExtractionMode",__FILE__, __func__, __LINE__);
 						}
 
 			for (i = 0; i < numOfImages; i++)
@@ -223,7 +223,7 @@ int main(int args_num, char** args)
 				msg = spConfigGetImagePath(imagePath, config, i);
 
 				if(msg!=SP_CONFIG_SUCCESS){
-						spLoggerPrintError("error reading spConfigGetImagePath",args[2],"main",__LINE__);
+						spLoggerPrintError("error reading spConfigGetImagePath",__FILE__, __func__, __LINE__);
 							}
 
 				allImagesFeatsByImg[i] = getFeaturesFromFile(
@@ -231,7 +231,7 @@ int main(int args_num, char** args)
 						spConfigGetImagesPrefix(config), i, &featsFound);
 
 				if(allImagesFeatsByImg[i]==NULL){
-										spLoggerPrintError("error with allImagesFeatsByImg[i]","","main",__LINE__);
+										spLoggerPrintError("error with allImagesFeatsByImg[i]",__FILE__, __func__, __LINE__);
 									}
 
 
@@ -245,7 +245,7 @@ int main(int args_num, char** args)
 				imagesFeatsMatchCount[i]= spListElementCreate(i,0);
 
 				if(imagesFeatsMatchCount[i]==NULL){
-									spLoggerPrintError("error allocation imagesFeatsMatchCount[i]","","main",__LINE__);
+									spLoggerPrintError("error allocation imagesFeatsMatchCount[i]",__FILE__, __func__, __LINE__);
 								}
 			}
 		}
@@ -292,7 +292,7 @@ int main(int args_num, char** args)
 
 					 bpqMsg =spBPQueueDequeue(bpq);
 					 if(bpqMsg!=SP_BPQUEUE_SUCCESS){
-					 					spLoggerPrintError("error with spBPQueueDequeue","main","main",__LINE__);
+					 					spLoggerPrintError("error with spBPQueueDequeue",__FILE__, __func__, __LINE__);
 					 						}
 				 }
 				 printf("bpq size is %d\n",spBPQueueSize(bpq));
@@ -329,21 +329,27 @@ int main(int args_num, char** args)
 			}
 			for(i=0;i<numOfImages;i++){
 				spListElementSetValue(imagesFeatsMatchCount[i],0.0);
+				spListElementSetIndex(imagesFeatsMatchCount[i],i);
 			}
 			for (i=0;i<spConfigGetspNumOfSimilarImages(config);i++)
-						{
-							free(imagesFound[i]);
-							}
+			{
+			  free(imagesFound[i]);
+			}
 			free(imagesFound);
 			free(quaryFeats);
 
 
 			printf("%s", "Please enter an image path:\n");
+			fflush(NULL);
 			scanf("%s", imagePath);
+			fflush(NULL);
+
 		}
 	}
 
 	printf("%s", "Exiting…\n");
+	fflush(NULL);
+
 
 	//free all
 	for(i=0;i<numOfImages;i++){

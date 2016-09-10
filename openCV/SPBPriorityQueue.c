@@ -1,5 +1,6 @@
 #include "SPListElement.h"
 #include "SPList.h"
+#include "SPLogger.h"
 #include "SPBPriorityQueue.h"
 #include <stdlib.h>
 #include <string.h>
@@ -13,11 +14,15 @@ struct sp_bp_queue_t {
 
 SPBPQueue spBPQueueCreate(int maxSize){
 	SPBPQueue queue = (SPBPQueue) malloc(sizeof(*queue));
-	if (queue == NULL)
+	if (queue == NULL){
+		spLoggerPrintError("error allocation queue",__FILE__, __func__, __LINE__);
 		return NULL;
+
+	}
 	else {
 		queue->list = spListCreate();
 		if (queue->list == NULL){
+			spLoggerPrintError("error allocation list",__FILE__, __func__, __LINE__);
 			free(queue);
 			return NULL;
 		}
@@ -28,15 +33,20 @@ SPBPQueue spBPQueueCreate(int maxSize){
 }
 
 SPBPQueue spBPQueueCopy(SPBPQueue source){
-	if (source == NULL)
+	if (source == NULL){
+		spLoggerPrintWarning("source == NULL",__FILE__, __func__, __LINE__);
 		return NULL;
+	}
 
 	SPBPQueue new = (SPBPQueue) malloc(sizeof(*new));
-	if (new == NULL)
+	if (new == NULL){
+		spLoggerPrintError("error allocation new",__FILE__, __func__, __LINE__);
 		return NULL;
+	}
 	else {
 		new->list = spListCopy(source->list);
 		if (new->list == NULL){
+			spLoggerPrintError("error allocation list",__FILE__, __func__, __LINE__);
 			free(new);
 			return NULL;
 		}
@@ -47,8 +57,10 @@ SPBPQueue spBPQueueCopy(SPBPQueue source){
 }
 
 void spBPQueueDestroy(SPBPQueue source){
-	if (source == NULL)
-		return;
+	if (source == NULL){
+		spLoggerPrintWarning("source == NULL",__FILE__, __func__, __LINE__);
+	    return;
+	}
 	spListDestroy(source->list);
 	free(source);
 }
@@ -60,14 +72,18 @@ void spBPQueueClear(SPBPQueue source){
 }
 
 int spBPQueueSize(SPBPQueue source){
-	if (source == NULL)
+	if (source == NULL){
+		spLoggerPrintWarning("source == NULL",__FILE__, __func__, __LINE__);
 		return -1;
+	}
 	return spListGetSize(source->list);
 }
 
 int spBPQueueGetMaxSize(SPBPQueue source){
-	if (source == NULL)
+	if (source == NULL){
+		spLoggerPrintWarning("source == NULL",__FILE__, __func__, __LINE__);
 		return -1;
+	}
 	return source->maxSize;
 }
 
@@ -134,8 +150,10 @@ SP_BPQUEUE_MSG spBPQueueDequeue(SPBPQueue source){
 SPListElement spBPQueuePeek(SPBPQueue source){
 	SPListElement newElement;
 
-	if (source == NULL || source->list == NULL)
+	if (source == NULL || source->list == NULL){
+		spLoggerPrintWarning("source == NULL or source->list == NULL",__FILE__, __func__, __LINE__);
 		return NULL;
+	}
 	if (spBPQueueSize(source) <=0)
 		return NULL;
 	 newElement = spListElementCopy(spListGetFirst(source->list));
@@ -145,8 +163,11 @@ SPListElement spBPQueuePeek(SPBPQueue source){
 SPListElement spBPQueuePeekLast(SPBPQueue source){
 	SPListElement newElement;
 
-	if (source == NULL || source->list == NULL)
-		return NULL;
+	if (source == NULL || source->list == NULL){
+		spLoggerPrintWarning("source == NULL or source->list == NULL",__FILE__, __func__, __LINE__);
+				return NULL;
+			}
+
 	if (spBPQueueSize(source) <=0)
 		return NULL;
 	 newElement = spListElementCopy(spListGetLast(source->list));
@@ -154,14 +175,19 @@ SPListElement spBPQueuePeekLast(SPBPQueue source){
 }
 
 double spBPQueueMinValue(SPBPQueue source){
-	if (source == NULL || source->list == NULL || spBPQueueSize(source) <=0)
+	if (source == NULL || source->list == NULL || spBPQueueSize(source) <=0){
+		spLoggerPrintWarning("source == NULL or source->list == NULL",__FILE__, __func__, __LINE__);
 		return -1;
+	}
+
 	return spListElementGetValue(spListGetFirst(source->list));
 }
 
 double spBPQueueMaxValue(SPBPQueue source){
-	if (source == NULL || source->list == NULL || spBPQueueSize(source) <=0)
+	if (source == NULL || source->list == NULL || spBPQueueSize(source) <=0){
+		spLoggerPrintWarning("source == NULL or source->list == NULL",__FILE__, __func__, __LINE__);
 		return -1;
+	}
 	return spListElementGetValue(spListGetLast(source->list));
 }
 

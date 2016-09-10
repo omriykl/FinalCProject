@@ -14,19 +14,19 @@ SPPoint spPointCreate(double* data, int dim, int index)
 {
 	SPPoint point;
 	if(dim<=0 || index<0 || data==NULL){
-		spLoggerPrintWarning("dim<=0 || index<0 || data==NULL","SPPoint","spPointCreate",__LINE__);
+		spLoggerPrintWarning("dim<=0 || index<0 || data==NULL",__FILE__, __func__, __LINE__);
 		return NULL;
 	}
 	point = (SPPoint) malloc(sizeof(*point));
 	if (point == NULL){
-		spLoggerPrintError("error while allocation of point","SPPoint","spPointCreate",__LINE__);
+		spLoggerPrintError("error while allocation of point",__FILE__, __func__, __LINE__);
 		return NULL;
 	}
 
 
 	point->data = (double*) calloc(dim,sizeof(double));
 	if (point->data == NULL){
-		spLoggerPrintError("error while allocation of data","SPPoint","spPointCreate",__LINE__);
+		spLoggerPrintError("error while allocation of data",__FILE__, __func__, __LINE__);
 		free(point);
 		return NULL;
 	}
@@ -45,14 +45,14 @@ SPPoint spPointCopy(SPPoint source)
 
 	SPPoint pointCp = (SPPoint) malloc(sizeof(*pointCp));
 	if (pointCp == NULL){
-		spLoggerPrintError("error while allocation of pointCp","SPPoint","spPointCopy",__LINE__);
+		spLoggerPrintError("error while allocation of pointCp",__FILE__, __func__, __LINE__);
         return NULL;
 	}
 
 
 	pointCp->data = (double*) calloc(source->dim,sizeof(double));
 	if (pointCp->data == NULL){
-		spLoggerPrintError("error while allocation of data","SPPoint","spPointCopy",__LINE__);
+		spLoggerPrintError("error while allocation of data",__FILE__, __func__, __LINE__);
 		spPointDestroy(pointCp);
 		return NULL;
 	}

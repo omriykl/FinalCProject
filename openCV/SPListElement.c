@@ -11,10 +11,12 @@ struct sp_list_element_t {
 SPListElement spListElementCreate(int index, double value) {
 	SPListElement temp = NULL;
 	if(index < 0 || value <0.0){
+		spLoggerPrintWarning("index < 0 || value <0.0",__FILE__, __func__, __LINE__);
 		return NULL;
 	}
 	temp = (SPListElement) malloc(sizeof(*temp));
 	if (temp == NULL) { //Allocation Fails
+		spLoggerPrintError("error while allocation of temp",__FILE__, __func__, __LINE__);
 		return NULL;
 	}
 	temp->index = index;
@@ -25,10 +27,12 @@ SPListElement spListElementCreate(int index, double value) {
 SPListElement spListElementCopy(SPListElement data) {
 	SPListElement elementCopy = NULL;
 	if (data == NULL) {
+		spLoggerPrintWarning("data == NULL",__FILE__, __func__, __LINE__);
 		return NULL;
 	}
 	elementCopy = (SPListElement) malloc(sizeof(*elementCopy));
 	if (elementCopy == NULL) {
+		spLoggerPrintError("error while allocation of elementCopy",__FILE__, __func__, __LINE__);
 		return NULL;
 	}
 	elementCopy->index = data->index;
@@ -38,6 +42,7 @@ SPListElement spListElementCopy(SPListElement data) {
 
 void spListElementDestroy(SPListElement data) {
 	if (data == NULL) {
+		spLoggerPrintWarning("data == NULL",__FILE__, __func__, __LINE__);
 		return;
 	}
 	free(data);
@@ -53,6 +58,7 @@ SP_ELEMENT_MSG spListElementSetIndex(SPListElement data, int index) {
 
 int spListElementGetIndex(SPListElement data) {
 	if(data == NULL){
+		spLoggerPrintWarning("data == NULL",__FILE__, __func__, __LINE__);
 		return -1;
 	}
 	return data->index;
@@ -68,6 +74,7 @@ SP_ELEMENT_MSG spListElementSetValue(SPListElement data, double newValue) {
 
 double spListElementGetValue(SPListElement data) {
 	if(data == NULL){
+		spLoggerPrintWarning("data == NULL",__FILE__, __func__, __LINE__);
 		return -1.0;
 	}
 	return data->value;

@@ -36,7 +36,7 @@ SPKDArray init(SPPoint* arr, int size)
 	struct indexPlusVal* vals;
 	SPKDArray kdArr = (SPKDArray) malloc(sizeof(*kdArr));
 	if (kdArr == NULL){
-		spLoggerPrintError("error while allocation of kdArr","SPKDArrays","init",__LINE__);
+		spLoggerPrintError("error while allocation of kdArr",__FILE__, __func__, __LINE__);
         return NULL;
 	}
 
@@ -44,7 +44,7 @@ SPKDArray init(SPPoint* arr, int size)
 	kdArr->points = (SPPoint*) malloc(sizeof(SPPoint)*size);
 	if (kdArr->points == NULL)
 	{
-		spLoggerPrintError("error while allocation of points","SPKDArrays","init",__LINE__);
+		spLoggerPrintError("error while allocation of points",__FILE__, __func__, __LINE__);
 		free(kdArr);
 		return NULL;
 	}
@@ -53,7 +53,7 @@ SPKDArray init(SPPoint* arr, int size)
 	{
 		kdArr->points[i] = (SPPoint) malloc(sizeof(SPPoint));
 		if(kdArr->points[i]==NULL){
-			spLoggerPrintError("error while allocation of kdArr->points[i]","SPKDArrays","init",__LINE__);
+			spLoggerPrintError("error while allocation of kdArr->points[i]",__FILE__, __func__, __LINE__);
 			SPKDArrayDestroy(kdArr);
 			return NULL;
 		}
@@ -66,7 +66,7 @@ SPKDArray init(SPPoint* arr, int size)
 
 	kdArr->matrix = (int**) malloc(dim*sizeof(int*));
 	if(kdArr->matrix==NULL){
-		spLoggerPrintError("error while allocation of kdArr->matrix","SPKDArrays","init",__LINE__);
+		spLoggerPrintError("error while allocation of kdArr->matrix",__FILE__, __func__, __LINE__);
 		SPKDArrayDestroy(kdArr);
 		return NULL;
 	}
@@ -76,7 +76,7 @@ SPKDArray init(SPPoint* arr, int size)
 	{
 		vals = malloc(sizeof(struct indexPlusVal)*size);
 		if(vals==NULL){
-				spLoggerPrintError("error while allocation of vals","SPKDArrays","init",__LINE__);
+				spLoggerPrintError("error while allocation of vals",__FILE__, __func__, __LINE__);
 				SPKDArrayDestroy(kdArr);
 				return NULL;
 			}
@@ -91,7 +91,7 @@ SPKDArray init(SPPoint* arr, int size)
 		kdArr->matrix[i] = (int*) malloc(sizeof(int)*size);
 		//TODO: check allocation
 		if(kdArr->matrix[i]==NULL){
-						spLoggerPrintError("error while allocation of kdArr->matrix[i]","SPKDArrays","init",__LINE__);
+						spLoggerPrintError("error while allocation of kdArr->matrix[i]",__FILE__, __func__, __LINE__);
 						SPKDArrayDestroy(kdArr);
 						return NULL;
 					}
@@ -124,7 +124,7 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 	//start allocation of x,map1,map2
 	x = (int*) malloc(sizeof(int) * kdArr->numOfPoints);
 	if (x == NULL){
-		spLoggerPrintError("error while allocation of x","SPKDArrays","split",__LINE__);
+		spLoggerPrintError("error while allocation of x",__FILE__, __func__, __LINE__);
 		return NULL; //TODO: log error
 	}
 
@@ -132,7 +132,7 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 	if (map1 == NULL)
 	{
 		free(x);
-		spLoggerPrintError("error while allocation of map1","SPKDArrays","split",__LINE__);
+		spLoggerPrintError("error while allocation of map1",__FILE__, __func__, __LINE__);
 		return NULL; //TODO: log error
 	}
 	map2 = (int*) malloc(sizeof(int) * kdArr->numOfPoints);
@@ -140,7 +140,7 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 	{
 		free(x);
 		free(map1);
-		spLoggerPrintError("error while allocation of map2","SPKDArrays","split",__LINE__);
+		spLoggerPrintError("error while allocation of map2",__FILE__, __func__, __LINE__);
 		return NULL; //TODO: log error
 	}
 
@@ -160,7 +160,7 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 		free(x);
 		free(map1);
 		free(map2);
-		spLoggerPrintError("error while allocation of leftPoints","SPKDArrays","split",__LINE__);
+		spLoggerPrintError("error while allocation of leftPoints",__FILE__, __func__, __LINE__);
 		return NULL; //TODO: log error
 	}
 	rightPoints = (SPPoint*) malloc(sizeof(SPPoint)*((kdArr->numOfPoints) - middle));
@@ -171,7 +171,7 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 		free(map2);
 		free(leftPoints);
 		//TODO free all points inside array
-		spLoggerPrintError("error while allocation of rightPoints","SPKDArrays","split",__LINE__);
+		spLoggerPrintError("error while allocation of rightPoints",__FILE__, __func__, __LINE__);
 		return NULL; //TODO: log error
 	}
 
@@ -192,7 +192,7 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 					free(leftPoints);
 					free(rightPoints);
 					//TODO free all points inside array
-					spLoggerPrintError("error while allocation of leftPoints[lIndex]","SPKDArrays","split",__LINE__);
+					spLoggerPrintError("error while allocation of leftPoints[lIndex]",__FILE__, __func__, __LINE__);
 					return NULL; //TODO: log error
 				}
 
@@ -213,7 +213,7 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 								free(leftPoints);
 								free(rightPoints);
 								//TODO free all points inside array
-								spLoggerPrintError("error while allocation of rightPoints[lIndex]","SPKDArrays","split",__LINE__);
+								spLoggerPrintError("error while allocation of rightPoints[lIndex]",__FILE__, __func__, __LINE__);
 								return NULL; //TODO: log error
 							}
 			rightPoints[rIndex] = spPointCopy(kdArr->points[i]);
@@ -399,34 +399,78 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 
 }
 int SPKDArrayGetNumOfPoints(SPKDArray arr){
+	if(arr==NULL){
+		spLoggerPrintWarning("arr in null",__FILE__, __func__, __LINE__);
+		return -1;
+	}
 	return arr->numOfPoints;
 }
 int SPKDArrayGetNumOfDims(SPKDArray arr){
+	if(arr==NULL){
+			spLoggerPrintWarning("arr in null",__FILE__, __func__, __LINE__);
+			return -1;
+		}
 	return arr->numOfDims;
 }
 
 SPPoint* SPKDArrayGetpoints(SPKDArray arr){
+	if(arr==NULL){
+			spLoggerPrintWarning("arr in null",__FILE__, __func__, __LINE__);
+			return NULL;
+		}
 	return arr->points;
 }
 
 int** SPKDArrayGetMatrix(SPKDArray arr){
+	if(arr==NULL){
+				spLoggerPrintWarning("arr in null",__FILE__, __func__, __LINE__);
+				return NULL;
+			}
 	return arr->matrix;
 }
 
 
 SPPoint KDArrayGetTheMostRightPoint(SPKDArray arr){
+	if(arr==NULL){
+				spLoggerPrintWarning("arr in null",__FILE__, __func__, __LINE__);
+				return NULL;
+			}
 	return arr->points[arr->numOfPoints -1];
 }
 
 
 void SPKDArrayDestroy(SPKDArray arr){
 	int i;
+	if(arr==NULL){
+		spLoggerPrintWarning("arr in null",__FILE__, __func__, __LINE__);
+		return;
+	}
+	if(arr->points==NULL){
+		spLoggerPrintWarning("points in null",__FILE__, __func__, __LINE__);
+		free(arr);
+		return;
+	}
 	for(i=0;i<arr->numOfPoints;i++){
-		spPointDestroy(arr->points[i]);
+		if(arr->points[i]==NULL){
+				spLoggerPrintWarning("arr->points[i] in null",__FILE__, __func__, __LINE__);
+			}
+		else{
+			spPointDestroy(arr->points[i]);
+		}
 	}
 	free(arr->points);
+	if(arr->matrix==NULL){
+			spLoggerPrintWarning("matrix in null",__FILE__, __func__, __LINE__);
+			free(arr);
+			return;
+		}
 	for(i=0;i<arr->numOfDims;i++){
-		free(arr->matrix[i]);
+		if(arr->matrix[i]==NULL){
+			spLoggerPrintWarning("arr->matrix[i] in null",__FILE__, __func__, __LINE__);
+		}
+		else{
+			free(arr->matrix[i]);
+		}
 	}
 	free(arr->matrix);
 }
