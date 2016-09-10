@@ -1,4 +1,5 @@
 #include "SPListElement.h"
+#include "SPLogger.h"
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
