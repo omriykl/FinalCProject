@@ -183,20 +183,6 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 	{
 		if (x[i] == 0)
 		{
-			leftPoints[lIndex] = (SPPoint) malloc(sizeof(SPPoint)); //TODO: check alloc
-			if (leftPoints[lIndex] == NULL)
-				{
-					free(x);
-					free(map1);
-					free(map2);
-					free(leftPoints);
-					free(rightPoints);
-					//TODO free all points inside array
-					spLoggerPrintError("error while allocation of leftPoints[lIndex]",__FILE__, __func__, __LINE__);
-					return NULL; //TODO: log error
-				}
-
-
 			leftPoints[lIndex] = spPointCopy(kdArr->points[i]);
 			map1[i] = lIndex;
 			map2[i] = -1;
@@ -204,18 +190,6 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 		}
 		else
 		{
-			rightPoints[rIndex] = (SPPoint) malloc(sizeof(SPPoint)); //TODO: check alloc
-			if (rightPoints[lIndex] == NULL)
-							{
-								free(x);
-								free(map1);
-								free(map2);
-								free(leftPoints);
-								free(rightPoints);
-								//TODO free all points inside array
-								spLoggerPrintError("error while allocation of rightPoints[lIndex]",__FILE__, __func__, __LINE__);
-								return NULL; //TODO: log error
-							}
 			rightPoints[rIndex] = spPointCopy(kdArr->points[i]);
 			map2[i] = rIndex;
 			map1[i] = -1;
