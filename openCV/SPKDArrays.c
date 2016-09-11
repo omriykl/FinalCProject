@@ -447,6 +447,7 @@ void SPKDArrayDestroy(SPKDArray arr){
 		}
 	}
 	free(arr->matrix);
+	free(arr);
 }
 
 //void main()

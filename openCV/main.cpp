@@ -366,20 +366,26 @@ int main(int args_num, char** args)
 	//free all
 	for(i=0;i<numOfImages;i++){
 		spListElementDestroy(imagesFeatsMatchCount[i]);
-		spPointDestroy(allImagesFeats[i]);
 		for(j=0;j<numOfFeats;j++){
 			spPointDestroy(allImagesFeatsByImg[i][j]);
 		}
 	}
+	for(i=0;i<featIndex;i++){
+		spPointDestroy(allImagesFeats[i]);
+	}
+
+	free(imagesFound);
 	free(imagesFeatsMatchCount);
 	free(allImagesFeats);
 	free(allImagesFeatsByImg);
+
 
 	SPKDArrayDestroy(arr);
 	KDTreeDestroy(tree);
 	free(configFile);
 	free(imagePath);
 	spConfigDestroy(config);
-	return 1;
+	spLoggerDestroy();
+	return 0;
 }
 

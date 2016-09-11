@@ -198,11 +198,11 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim,SP_SPLI
 	//FREE
 	for(i=0;i<numOfDims;i++){
 
-//		spListElementDestroy(allDimsDiff[i]);
+		spListElementDestroy(allDimsDiff[i]);
 	}
-//	free(allDimsDiff);
-//	SPKDArrayDestroy(kda);
-//	free(splitReturn);
+	free(allDimsDiff);
+	SPKDArrayDestroy(kda);
+	free(splitReturn);
 //	free(t);
 
 	return head;
