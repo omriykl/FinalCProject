@@ -6,7 +6,8 @@
  */
 
 #include <cstdio>
-#include <cstdlib> //include c library#include "SPImageProc.h"
+#include <cstdlib> //include c library
+#include "SPImageProc.h"
 extern "C"
 { //include your own C source files
 #include "SPConfig.h"
@@ -192,20 +193,15 @@ int main(int args_num, char** args)
 				allImagesFeatsByImg[i] = pr.getImageFeatures(imagePath, i,
 						&featsFound);
 
-				//todo: what is this?
-				//SPPoint* featsTest=pr.getImageFeatures(imagePath, i,&featsFound);
-
-			  //  spPointGetData(*featsTest);
-
 
 				if(allImagesFeatsByImg[i]==NULL){
 								spLoggerPrintError("error with allImagesFeatsByImg[i]",__FILE__, __func__, __LINE__);
 							}
 
-
 				saveFeaturesToFile(spConfigGetImagesDirectory(config),
 						spConfigGetImagesPrefix(config), i, allImagesFeatsByImg[i],
 						featsFound);
+
 
 				for(j=0;j<featsFound;j++){
 					allImagesFeats[featIndex]=allImagesFeatsByImg[i][j];

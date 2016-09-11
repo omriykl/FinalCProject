@@ -1,0 +1,19 @@
+---INFO---
+- message: After ImageProc Creation
+---INFO---
+- message: After imagePath Creation
+---INFO---
+- message: After arr Creation
+---DEBUG---
+- file: ..\KDTreeBuiler.c
+- function: CreateTreeFromArray
+- line: 52
+- message: start CreateTreeFromArray
+---INFO---
+- message: After tree Creation
+---INFO---
+- message: After quaryFeats Creation
+---INFO---
+- message: Beofore qsort 
+---INFO---
+- message: After qsort 

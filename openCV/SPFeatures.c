@@ -16,12 +16,15 @@ void saveFeaturesToFile(char * imgDir,char * imgPre,int index,SPPoint * features
 	int i;
 
 	sprintf(filePath,"%s%s%d.feats",imgDir,imgPre,index);
-	FILE * file = fopen(filePath,"w+");
+	FILE * file = fopen(filePath,"wb+");
 
 	if(file==NULL){
 		spLoggerPrintError("error while reading file ","SPFeatures","saveFeaturesToFile",__LINE__);
 		return;
 	}
+
+	//save the number of feats;
+	fwrite(&numberOfFeats,sizeof(int),1,file);
 
 	for (i=0;i<numberOfFeats;i++)
 	{
@@ -29,6 +32,7 @@ void saveFeaturesToFile(char * imgDir,char * imgPre,int index,SPPoint * features
 		dim = spPointGetDimension(features[i]);
 		fwrite(&dim,sizeof(int),1,file);
 		fwrite(data,sizeof(double),dim,file);
+		fflush(NULL);
 	}
 	if(fflush(file)==EOF){
 		spLoggerPrintError("error while fflush file ","SPFeatures","saveFeaturesToFile",__LINE__);
@@ -48,44 +52,91 @@ SPPoint * getFeaturesFromFile(char * imgDir,char * imgPre,int index, int * numbe
 	int dim;
 	double * data;
 	int i=0;
-	SPPoint * feats = (SPPoint*) malloc(sizeof(SPPoint)*100); //TODO: get maxNumOfFeats from conf
+	SPPoint * feats;
 
 	sprintf(filePath,"%s%s%d.feats",imgDir,imgPre,index);
 
-	FILE * file = fopen(filePath,"r");
+	FILE * file = fopen(filePath,"rb");
 	if(file==NULL){
 			spLoggerPrintError("error while reading file ","SPFeatures","getFeaturesFromFile",__LINE__);
 			return NULL;
 		}
 
-	while (fread(&dim,4,1,file) > 0)
+	//reads number of features
+	fread(numberOfFeats,sizeof(int),1,file);
+
+	feats = (SPPoint*) malloc(sizeof(SPPoint)*(*numberOfFeats));
+
+	while (i < *numberOfFeats)
 	{
-		data = calloc(dim,sizeof(double));
+		dim = 0;
+		fread(&dim,4,1,file);
+		data =(double*) malloc(sizeof(double)*dim);
 		fread(data,sizeof(double),dim,file);
 		feats[i] = spPointCreate(data,dim,index);
 		i++;
 	}
 
-	*numberOfFeats = i;
 	return feats;
 }
 
-//void main ()
-//{
-//	double dt[2]={1.3,4.6};
-//	double dt3[3]={1.3,4.6,5.7};
-//	SPPoint p[2];
-//	p[0] = spPointCreate(dt,2,0);
-//	p[1] = spPointCreate(dt3,3,1);
-
-
-//	saveFeaturesToFile("images\\","img",4,p,2);
+void main2()
+{
+//	double data1[100][28];
+//	int i,j;
+//
+//	SPPoint *points = (SPPoint*) malloc(sizeof(SPPoint)*100);
+//
+//	for (i=0;i<100;i++)
+//	{
+//		for (j=0;j<28;j++)
+//		{
+//			data1[i][j] = i*j;
+//		}
+//		points[i] = spPointCreate(data1[i],28,0);
+//	}
+//
+//	saveFeaturesToFile("images\\","img",400,points,100);
+//
+//	int num;
+//
+//	SPPoint * points2 = getFeaturesFromFile("images2\\","img",0,&num);
+//
+//	printf("\ngot %d",num);
+//	printf("\npoint %d",spPointGetDimension(points2[0]));
+//	printf("\npoint data %f",spPointGetAxisCoor(points2[5],5));
 
 //	int num;
+//	int dim;
+//	double * data;
+//
+//	FILE * file = fopen("images2/img0.feats","r");
+//
+//	//reads number of features
+//	fread(&num,sizeof(int),1,file);
+//	fread(&dim,sizeof(int),1,file);
+//
+//	fseek(file,7,SEEK_SET);
+//
+//	data = (double*) malloc(sizeof(double)*200);
+//
+//	int d = fread(data,sizeof(double),200,file);
+//
+//	fflush(NULL);
+//	printf("%d %d %f read total = %d\n",num,dim,data[0],d);
+//
+////	fseek(file,4,SEEK_SET);
+//
+//	dim=20;
+//
+//	fread(&dim,sizeof(int),1,file);
+//
+//	data = (double*) malloc(sizeof(double)*dim);
+//
+//	int read = fread(data,sizeof(double),dim,file);
+//
+//	printf("%d %d %f %d",num,dim,data[0],read);
+//
+//	fclose(file);
 
-//	SPPoint * points = getFeaturesFromFile("images\\","img",4,&num);
-
-//	printf("\ngot %d",num);
-//	printf("\npoint %d",spPointGetDimension(points[1]));
-//	printf("\npoint data %f",spPointGetAxisCoor(points[1],2));
-//}
+}
