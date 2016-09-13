@@ -125,10 +125,12 @@ int main(int args_num, char** args)
 	config = spConfigCreate(args[2], &msg);
 	if (config == NULL)
 	{
-		return 0;
+		printf("error while reading config file");
 	}
-	else
-	{
+	else if(msg!=SP_CONFIG_SUCCESS){
+
+	}
+	else{
 		spConfigPrint(config);
 		spLoggerPrintInfo("After Config Creation");
 

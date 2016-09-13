@@ -64,12 +64,11 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim,SP_SPLI
 	}
 	KDTreeNode head=(KDTreeNode)malloc( sizeof(*head));
 	if(head==NULL){
-						spLoggerPrintError("error allocation head",__FILE__, __func__, __LINE__);
-					}
+		spLoggerPrintError("error allocation head",__FILE__, __func__, __LINE__);
+	}
 	SPKDArray* splitReturn=NULL;
 	int i,j,dimToSplitBy;
 	double min,max,temp;
-	time_t t;
 	int numOfDims=SPKDArrayGetNumOfDims(kda);
 	int numOfPoints=SPKDArrayGetNumOfPoints(kda);
 	SPPoint* points=SPKDArrayGetpoints(kda);
@@ -88,7 +87,7 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim,SP_SPLI
 
 	if(numOfPoints==1){
 		head->Dim=-1;//invalid;
-		head->Val=-1;//invalid;
+		head->Val=-999.999;//invalid;
 		head->Left=NULL;
 		head->Right=NULL;
 		head->Data=points[0];
@@ -112,6 +111,7 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim,SP_SPLI
 					min=spPointGetData(points[0])[i];
 					max=spPointGetData(points[0])[i];
 				}
+
 
 
 
@@ -146,30 +146,23 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim,SP_SPLI
 
 			dimToSplitBy = spListElementGetIndex(allDimsDiff[0]);
 
-			if(dimToSplitBy<0 || dimToSplitBy>numOfDims){
-				spLoggerPrintError("dimToSplitBy<0 || dimToSplitBy>numOfDims",__FILE__, __func__, __LINE__);
-				return NULL;
-			}
+
 
 		}
 		else if(method== RANDOM){
-			srand((unsigned) time(&t));
+			srand(time(NULL));
 			dimToSplitBy=rand()%numOfDims;
-
-			if(dimToSplitBy<0 || dimToSplitBy>numOfDims){
-						spLoggerPrintError("dimToSplitBy<0 || dimToSplitBy>numOfDims",__FILE__, __func__, __LINE__);
-						return NULL;
-			}
 
 		}
 		else if(method== INCREMENTAL ){
 
 			dimToSplitBy=(incNextDim)%numOfDims;
 
-			if(dimToSplitBy<0 || dimToSplitBy>numOfDims){
-						spLoggerPrintError("dimToSplitBy<0 || dimToSplitBy>numOfDims",__FILE__, __func__, __LINE__);
-						return NULL;
-			}
+		}
+
+		if(dimToSplitBy<0 || dimToSplitBy>numOfDims){
+			spLoggerPrintError("dimToSplitBy<0 || dimToSplitBy>numOfDims",__FILE__, __func__, __LINE__);
+			return NULL;
 		}
 
 		head->Dim=dimToSplitBy;
@@ -192,7 +185,6 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim,SP_SPLI
 		head->Left=CreateTreeNode(splitReturn[0],spConfig,incNextDim+1,method);
 		head->Right=CreateTreeNode(splitReturn[1],spConfig,incNextDim+1,method);
 
-
 	}
 
 	//FREE
@@ -203,7 +195,6 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim,SP_SPLI
 //	free(allDimsDiff);
 //	SPKDArrayDestroy(kda);
 //	free(splitReturn);
-//	free(t);
 
 	return head;
 
@@ -224,6 +215,7 @@ KDTreeNode KDTreeNodeGetRight(KDTreeNode node){
 
 void kNearestNeighbors(KDTreeNode curr,SPBPQueue bpq, SPPoint P){
 	double dist;
+	double temp;
 	SPListElement elem;
 	bool sideToSearch;//true = left, false= right
 	bool checkCondition;
@@ -249,7 +241,8 @@ void kNearestNeighbors(KDTreeNode curr,SPBPQueue bpq, SPPoint P){
 	}
 
 	//check if |curr.val - P[curr.dim]|^2 is less than the priority of the max-priority element of bpq
-	checkCondition= (pow(curr->Val - spPointGetData(P)[curr->Dim],2) < spBPQueueMaxValue(bpq));
+	temp=(curr->Val - spPointGetData(P)[curr->Dim]);
+	checkCondition= ((temp*temp) < spBPQueueMaxValue(bpq));
 
 	if(!spBPQueueIsFull(bpq) || checkCondition){
 		if(sideToSearch==true){

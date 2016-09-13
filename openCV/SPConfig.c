@@ -38,13 +38,14 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 			}
 			i++;
 		}
+
 		free(spConfig->spImagesDirectory);
 		spConfig->spImagesDirectory = malloc(sizeof(char) * 1025);
 		spConfig->spImagesDirectory[0] = '\0';
-		strcpy(spConfig->spImagesDirectory, val);
 
+		strcpy(spConfig->spImagesDirectory, val);
 		//TODO fix spImagesDirectory set
-		spConfig->spImagesDirectory = "images2/";
+		spConfig->spImagesDirectory = "./test1images/";
 
 		printf("%s - %s\n", var, val);
 	}
@@ -83,7 +84,6 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 
 		spConfig->spImagesSuffix = malloc(sizeof(char) * 1025);
 		spConfig->spImagesSuffix[0] = '\0';
-
 		strcpy(spConfig->spImagesSuffix, val);
 		printf("%s - %s\n", var, val);
 
@@ -148,6 +148,7 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 			return false;
 		}
 		spConfig->spNumOfImages = atoi(val);
+		printf("%s - %s\n", var, val);
 	}
 	else if (strcmp(var, "spPCADimension") == 0)
 	{
@@ -336,8 +337,10 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 						}
 						else if (line[i] == ' ')
 						{
-							while (line[i + 1] == ' ')
+							while (line[i + 1] == ' '){
 								i++;
+							}
+
 							if (line[i + 1] != '=')
 							{
 								*msg = SP_CONFIG_INVALID_STRING;
@@ -385,10 +388,10 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 				}
 				i++;
 			}
-			if (varOrValue != 2)
+			if (varOrValue != 2 && varOrValue != 0)
 			{
 				printf(
-						"File: %s\n Line: %d\n Message: Invalid configuration line",
+						"File: %s\n Line: %d\n Message: Invalid configuration line\n",
 						filename, countLine);
 			}
 			value[valIndex] = '\0';
@@ -397,7 +400,7 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 			if (setResult == false)
 			{
 				printf(
-						"File: %s\n Line: %d\n Message: Invalid value - constraint not met",
+						"File: %s\n Line: %d\n Message: Invalid value - constraint not met\n",
 						filename, countLine);
 				spConfigDestroy(spConfig);
 				return NULL;
@@ -628,9 +631,9 @@ void spConfigDestroy(SPConfig config)
 
 void spConfigPrint(SPConfig co)
 {
-	printf(" = %s\n", co->spImagesDirectory);
-	printf(" = %s\n", co->spImagesPrefix);
-	printf(" = %s\n", co->spImagesSuffix);
+	printf("spImagesDirectory = %s\n", co->spImagesDirectory);
+	printf("spImagesPrefix = %s\n", co->spImagesPrefix);
+	printf("spImagesSuffix = %s\n", co->spImagesSuffix);
 	printf(" = %s\n", co->spLoggerFilename);
 	printf(" = %s\n", co->spPCAFilename);
 	printf(" = %d\n", co->spKNN);
