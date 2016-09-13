@@ -35,7 +35,8 @@ SPKDArray init(SPPoint* arr, int size)
 	int dim;
 	struct indexPlusVal* vals;
 	SPKDArray kdArr = (SPKDArray) malloc(sizeof(*kdArr));
-	if (kdArr == NULL){
+	if (kdArr == NULL)
+	{
 		spLoggerPrintError("error while allocation of kdArr",__FILE__, __func__, __LINE__);
         return NULL;
 	}
@@ -51,13 +52,6 @@ SPKDArray init(SPPoint* arr, int size)
 
 	for (i=0;i<size;i++)
 	{
-		kdArr->points[i] = (SPPoint) malloc(sizeof(SPPoint));
-		if(kdArr->points[i]==NULL){
-			spLoggerPrintError("error while allocation of kdArr->points[i]",__FILE__, __func__, __LINE__);
-			SPKDArrayDestroy(kdArr);
-			return NULL;
-		}
-		//TODO: free all in case of null
 		kdArr->points[i] = spPointCopy(arr[i]);
 	}
 
@@ -65,16 +59,16 @@ SPKDArray init(SPPoint* arr, int size)
 	kdArr->numOfDims=dim;
 
 	kdArr->matrix = (int**) malloc(dim*sizeof(int*));
-	if(kdArr->matrix==NULL){
+	if(kdArr->matrix==NULL)
+	{
 		spLoggerPrintError("error while allocation of kdArr->matrix",__FILE__, __func__, __LINE__);
 		SPKDArrayDestroy(kdArr);
 		return NULL;
 	}
 
-	//TODO: check allocation
 	for (i=0;i<dim;i++)
 	{
-		vals = malloc(sizeof(struct indexPlusVal)*size);
+		vals = (struct indexPlusVal*) malloc(sizeof(struct indexPlusVal)*size);
 		if(vals==NULL){
 				spLoggerPrintError("error while allocation of vals",__FILE__, __func__, __LINE__);
 				SPKDArrayDestroy(kdArr);
@@ -89,12 +83,13 @@ SPKDArray init(SPPoint* arr, int size)
 		qsort(vals,size,sizeof(struct indexPlusVal),cmpFuncByVals);
 
 		kdArr->matrix[i] = (int*) malloc(sizeof(int)*size);
-		//TODO: check allocation
-		if(kdArr->matrix[i]==NULL){
-						spLoggerPrintError("error while allocation of kdArr->matrix[i]",__FILE__, __func__, __LINE__);
-						SPKDArrayDestroy(kdArr);
-						return NULL;
-					}
+		if(kdArr->matrix[i]==NULL)
+		{
+			spLoggerPrintError("error while allocation of kdArr->matrix[i]",__FILE__, __func__, __LINE__);
+			free(vals);
+			SPKDArrayDestroy(kdArr);
+			return NULL;
+		}
 
 		for (j=0;j<size;j++)
 		{
@@ -105,6 +100,21 @@ SPKDArray init(SPPoint* arr, int size)
 	}
 
 	return kdArr;
+}
+
+void destroyPointsArr(SPPoint * points,int size)
+{
+	int i;
+	for (i=0;i<size;i++)
+		spPointDestroy(points[i]);
+	free(points);
+}
+
+void freeDoubleIntArr(int** arr,int size)
+{
+	int i;
+	for (i=0;i<size;i++)
+		free(arr[i]);
 }
 
 SPKDArray * split(SPKDArray kdArr, int coor)
@@ -125,7 +135,7 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 	x = (int*) malloc(sizeof(int) * kdArr->numOfPoints);
 	if (x == NULL){
 		spLoggerPrintError("error while allocation of x",__FILE__, __func__, __LINE__);
-		return NULL; //TODO: log error
+		return NULL;
 	}
 
 	map1 = (int*) malloc(sizeof(int) * kdArr->numOfPoints);
@@ -133,7 +143,7 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 	{
 		free(x);
 		spLoggerPrintError("error while allocation of map1",__FILE__, __func__, __LINE__);
-		return NULL; //TODO: log error
+		return NULL;
 	}
 	map2 = (int*) malloc(sizeof(int) * kdArr->numOfPoints);
 	if (map2 == NULL)
@@ -141,17 +151,14 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 		free(x);
 		free(map1);
 		spLoggerPrintError("error while allocation of map2",__FILE__, __func__, __LINE__);
-		return NULL; //TODO: log error
+		return NULL;
 	}
 
-	//calculation of x, which will hold 0 if index i of x is in left side, or 1 if it's in thr right side
+	//calculation of x, which will hold 0 if index i of x is in left side, or 1 if it's in the right side
 	for (i=0;i<middle;i++)
 		x[kdArr->matrix[coor][i]] = 0;
 	for (i=middle;i<kdArr->numOfPoints;i++)
 		x[kdArr->matrix[coor][i]] = 1;
-
-	//for (i=0;i<kdArr->numOfPoints;i++) //TODO: remove after testing
-		//printf("%d = %d\n",i,x[i]); //TODO: remove after testing
 
 	//allocation of leftPoints and rightPoints
 	leftPoints = (SPPoint*) malloc(sizeof(SPPoint)*middle);
@@ -161,7 +168,7 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 		free(map1);
 		free(map2);
 		spLoggerPrintError("error while allocation of leftPoints",__FILE__, __func__, __LINE__);
-		return NULL; //TODO: log error
+		return NULL;
 	}
 	rightPoints = (SPPoint*) malloc(sizeof(SPPoint)*((kdArr->numOfPoints) - middle));
 	if (rightPoints == NULL)
@@ -170,9 +177,8 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 		free(map1);
 		free(map2);
 		free(leftPoints);
-		//TODO free all points inside array
 		spLoggerPrintError("error while allocation of rightPoints",__FILE__, __func__, __LINE__);
-		return NULL; //TODO: log error
+		return NULL;
 	}
 
 
@@ -197,52 +203,28 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 		}
 	}
 
-
-
-//	printf("\nThe left group: \n");
-//	for (i=0;i<middle;i++)
-//	{
-//		printf("%f\n", spPointGetAxisCoor(leftPoints[i],coor));
-//	}
-//
-//	printf("\nThe right group: \n");
-//	for (i=0;i<(kdArr->numOfPoints - middle);i++)
-//	{
-//		printf("%f\n", spPointGetAxisCoor(rightPoints[i],coor));
-//	}
-//
-//	printf("\nMap1:\n[");
-//	for (i=0;i<kdArr->numOfPoints;i++)
-//	{
-//		printf("%d,",map1[i]);
-//	}
-//
-//	printf("]\nMap2:\n[");
-//	for (i=0;i<kdArr->numOfPoints;i++)
-//	{
-//		printf("%d,",map2[i]);
-//	}
-
 	matrixLeft = (int**)malloc(sizeof(int*)*kdArr->numOfDims);
 	if (matrixLeft == NULL)
 	{
 		free(x);
 		free(map1);
 		free(map2);
-		free(leftPoints);
-		//TODO: free other stuff (points)
-		return NULL; //TODO: log error
+		destroyPointsArr(leftPoints,middle);
+		destroyPointsArr(rightPoints,((kdArr->numOfPoints) - middle));
+		spLoggerPrintError("error while allocation of matrixLeft",__FILE__, __func__, __LINE__);
+		return NULL;
 	}
 	matrixRight = (int**)malloc(sizeof(int*)*kdArr->numOfDims);
-	if (matrixLeft == NULL)
+	if (matrixRight == NULL)
 	{
 		free(x);
 		free(map1);
 		free(map2);
-		free(leftPoints);
+		destroyPointsArr(leftPoints,middle);
+		destroyPointsArr(rightPoints,((kdArr->numOfPoints) - middle));
 		free(matrixLeft);
-		//TODO: free other stuff (points)
-		return NULL; //TODO: log error
+		spLoggerPrintError("error while allocation of matrixRight",__FILE__, __func__, __LINE__);
+		return NULL;
 	}
 
 	for (i=0;i<kdArr->numOfDims;i++)
@@ -250,28 +232,32 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 		matrixLeft[i] = (int*) malloc(sizeof(int)*middle);
 		if (matrixLeft[i] == NULL)
 		{
-			//TODO: free each matrixLeft[k], matrixRight[k] | k < i
 			free(x);
 			free(map1);
 			free(map2);
-			free(leftPoints);
+			destroyPointsArr(leftPoints,middle);
+			destroyPointsArr(rightPoints,((kdArr->numOfPoints) - middle));
+			freeDoubleIntArr(matrixLeft,i);
+			freeDoubleIntArr(matrixRight,i);
 			free(matrixLeft);
 			free(matrixRight);
-			//TODO: free other stuff (points)
-			return NULL; //TODO: log error
+			spLoggerPrintError("error while allocation of matrixLeft[i]",__FILE__, __func__, __LINE__);
+			return NULL;
 		}
 		matrixRight[i] = (int*) malloc(sizeof(int)*(kdArr->numOfPoints - middle));
 		if (matrixRight[i] == NULL)
 		{
-			//TODO: free each matrixLeft[k] | k <= i, matrixRight[k] | k < i
 			free(x);
 			free(map1);
 			free(map2);
-			free(leftPoints);
+			destroyPointsArr(leftPoints,middle);
+			destroyPointsArr(rightPoints,((kdArr->numOfPoints) - middle));
+			freeDoubleIntArr(matrixLeft,i+1);
+			freeDoubleIntArr(matrixRight,i);
 			free(matrixLeft);
 			free(matrixRight);
-			//TODO: free other stuff (points)
-			return NULL; //TODO: log error
+			spLoggerPrintError("error while allocation of matrixRight[i]",__FILE__, __func__, __LINE__);
+			return NULL;
 		}
 		lIndex = 0;
 		rIndex = 0;
@@ -289,27 +275,6 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 			}
 		}
 	}
-//	printf("\n\n");
-//	for (i=0;i<2;i++)
-//	{
-//		printf("[");
-//		for (j=0;j<middle;j++)
-//		{
-//			printf("%d , ",matrixLeft[i][j]);
-//		}
-//		printf("]\n");
-//	}
-//
-//	printf("\n\n");
-//	for (i=0;i<2;i++)
-//	{
-//		printf("[");
-//		for (j=0;j<kdArr->numOfPoints - middle;j++)
-//		{
-//			printf("%d , ",matrixRight[i][j]);
-//		}
-//		printf("]\n");
-//	}
 
 	left = (SPKDArray) malloc(sizeof(*kdArr));
 	if (left == NULL)
@@ -317,11 +282,14 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 		free(x);
 		free(map1);
 		free(map2);
-		free(leftPoints);
+		destroyPointsArr(leftPoints,middle);
+		destroyPointsArr(rightPoints,((kdArr->numOfPoints) - middle));
+		freeDoubleIntArr(matrixLeft,kdArr->numOfDims);
+		freeDoubleIntArr(matrixRight,kdArr->numOfDims);
 		free(matrixLeft);
 		free(matrixRight);
-		//TODO: free other stuff (points)
-		return NULL; //TODO: log error
+		spLoggerPrintError("error while allocation of left",__FILE__, __func__, __LINE__);
+		return NULL;
 	}
 	right = (SPKDArray) malloc(sizeof(*kdArr));
 	if (right == NULL)
@@ -329,12 +297,15 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 		free(x);
 		free(map1);
 		free(map2);
-		free(leftPoints);
+		destroyPointsArr(leftPoints,middle);
+		destroyPointsArr(rightPoints,((kdArr->numOfPoints) - middle));
+		freeDoubleIntArr(matrixLeft,kdArr->numOfDims);
+		freeDoubleIntArr(matrixRight,kdArr->numOfDims);
 		free(matrixLeft);
 		free(matrixRight);
 		free(left);
-		//TODO: free other stuff (points)
-		return NULL; //TODO: log error
+		spLoggerPrintError("error while allocation of right",__FILE__, __func__, __LINE__);
+		return NULL;
 	}
 
 	left->matrix=matrixLeft;
@@ -353,13 +324,16 @@ SPKDArray * split(SPKDArray kdArr, int coor)
 		free(x);
 		free(map1);
 		free(map2);
-		free(leftPoints);
+		destroyPointsArr(leftPoints,middle);
+		destroyPointsArr(rightPoints,((kdArr->numOfPoints) - middle));
+		freeDoubleIntArr(matrixLeft,kdArr->numOfDims);
+		freeDoubleIntArr(matrixRight,kdArr->numOfDims);
 		free(matrixLeft);
 		free(matrixRight);
 		free(left);
 		free(right);
-		//TODO: free other stuff (points)
-		return NULL; //TODO: log error
+		spLoggerPrintError("error while allocation of leftAndRight",__FILE__, __func__, __LINE__);
+		return NULL;
 	}
 
 	leftAndRight[0] = left;
