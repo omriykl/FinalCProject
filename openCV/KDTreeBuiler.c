@@ -90,7 +90,7 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim,SP_SPLI
 		head->Val=-999.999;//invalid;
 		head->Left=NULL;
 		head->Right=NULL;
-		head->Data=points[0];
+		head->Data=spPointCopy(points[0]);
 	}
 	else{
 
@@ -111,9 +111,6 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim,SP_SPLI
 					min=spPointGetData(points[0])[i];
 					max=spPointGetData(points[0])[i];
 				}
-
-
-
 
 				for(j=0;j<numOfPoints;j++){
 
@@ -188,12 +185,16 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim,SP_SPLI
 	}
 
 	//FREE
-	for(i=0;i<numOfDims;i++){
+	if(method== MAX_SPREAD){
+		for(i=0;i<numOfDims;i++){
 
-	//	spListElementDestroy(allDimsDiff[i]);
+				spListElementDestroy(allDimsDiff[i]);
+			}
 	}
-//	free(allDimsDiff);
-//	SPKDArrayDestroy(kda);
+
+
+	free(allDimsDiff);
+	SPKDArrayDestroy(kda);
 //	free(splitReturn);
 
 	return head;
@@ -218,7 +219,6 @@ void kNearestNeighbors(KDTreeNode curr,SPBPQueue bpq, SPPoint P){
 	double temp;
 	SPListElement elem;
 	bool sideToSearch;//true = left, false= right
-	bool checkCondition;
 	if(curr==NULL){
 		spLoggerPrintWarning("curr in null",__FILE__, __func__, __LINE__);
 		return;
@@ -241,10 +241,13 @@ void kNearestNeighbors(KDTreeNode curr,SPBPQueue bpq, SPPoint P){
 	}
 
 	//check if |curr.val - P[curr.dim]|^2 is less than the priority of the max-priority element of bpq
-	temp=(curr->Val - spPointGetData(P)[curr->Dim]);
-	checkCondition= ((temp*temp) < spBPQueueMaxValue(bpq));
 
-	if(!spBPQueueIsFull(bpq) || checkCondition){
+	//temp=(curr->Val - spPointGetData(P)[curr->Dim]);
+	temp=curr->Val - spPointGetAxisCoor(P,curr->Dim);
+
+	//checkCondition= ((temp*temp) < spBPQueueMaxValue(bpq));
+
+	if(!spBPQueueIsFull(bpq) || ((temp*temp) < spBPQueueMaxValue(bpq))){
 		if(sideToSearch==true){
 			kNearestNeighbors(curr->Right , bpq,  P);
 		}

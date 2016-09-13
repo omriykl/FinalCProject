@@ -77,6 +77,7 @@ int main(int args_num, char** args)
 	int numOfFeats;
 	int featsFound;
 	char* imagePath;
+	int totalFeatsCounts=0;
 	SPPoint ** allImagesFeatsByImg;
 	SPPoint * allImagesFeats;
 	SPKDArray arr;
@@ -85,6 +86,7 @@ int main(int args_num, char** args)
 	SPPoint* quaryFeats;
 	SPListElement* imagesFeatsMatchCount;
 	SPListElement topOfTheBPQ;
+	SPListElement tempElement;
 	SPBPQueue bpq;
 	double val;
 	char ** imagesFound;
@@ -192,8 +194,11 @@ int main(int args_num, char** args)
 						spLoggerPrintError("error reading spConfigGetImagePath",__FILE__, __func__, __LINE__);
 							}
 
+
 				allImagesFeatsByImg[i] = pr.getImageFeatures(imagePath, i,
 						&featsFound);
+
+				totalFeatsCounts+=featsFound;
 
 
 				if(allImagesFeatsByImg[i]==NULL){
@@ -204,6 +209,9 @@ int main(int args_num, char** args)
 						spConfigGetImagesPrefix(config), i, allImagesFeatsByImg[i],
 						featsFound);
 
+				if(totalFeatsCounts>(numOfImages * numOfFeats)){
+					allImagesFeats = (SPPoint *) realloc(allImagesFeats,(sizeof(SPPoint) * numOfImages * numOfFeats)+featsFound);
+				}
 
 				for(j=0;j<featsFound;j++){
 					allImagesFeats[featIndex]=allImagesFeatsByImg[i][j];
@@ -235,11 +243,15 @@ int main(int args_num, char** args)
 						spConfigGetImagesDirectory(config),
 						spConfigGetImagesPrefix(config), i, &featsFound);
 
+				totalFeatsCounts+=featsFound;
+
 				if(allImagesFeatsByImg[i]==NULL){
 										spLoggerPrintError("error with allImagesFeatsByImg[i]",__FILE__, __func__, __LINE__);
 									}
 
-
+				if(totalFeatsCounts>(numOfImages * numOfFeats)){
+									allImagesFeats = (SPPoint *) realloc(allImagesFeats,(sizeof(SPPoint) * numOfImages * numOfFeats)+featsFound);
+								}
 
 				for(j=0;j<featsFound;j++){
 									allImagesFeats[featIndex]=allImagesFeatsByImg[i][j];
@@ -276,7 +288,7 @@ int main(int args_num, char** args)
 
 		while (strcmp(imagePath, "<>") != 0)
 		{
-
+			featsFound=0;
 			quaryFeats = pr.getImageFeatures(imagePath, i,&featsFound);
 
 			spLoggerPrintInfo("After quaryFeats Creation");
@@ -293,12 +305,15 @@ int main(int args_num, char** args)
 
 				 for(j=0;j<spBPQueueSize(bpq);j++)
 				 {
-					 topOfTheBPQ=imagesFeatsMatchCount[spListElementGetIndex(spBPQueuePeek(bpq))];
+					 tempElement=spBPQueuePeek(bpq);
+					 topOfTheBPQ=imagesFeatsMatchCount[spListElementGetIndex(tempElement)];
+
 					 val = spListElementGetValue(topOfTheBPQ);
 					 val = val + 1.0;
 					 spListElementSetValue(topOfTheBPQ,val);
 
 					 //printf("add 1 to value on index %d\n",spListElementGetIndex(topOfTheBPQ));
+					 spListElementDestroy(tempElement);
 
 					 bpqMsg =spBPQueueDequeue(bpq);
 					 if(bpqMsg!=SP_BPQUEUE_SUCCESS){
@@ -380,7 +395,6 @@ int main(int args_num, char** args)
 	free(imagesFeatsMatchCount);
 	free(allImagesFeats);
 	free(allImagesFeatsByImg);
-
 
 	SPKDArrayDestroy(arr);
 	KDTreeDestroy(tree);
