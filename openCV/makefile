@@ -26,21 +26,21 @@ SPImageProc.o: SPImageProc.cpp SPImageProc.h SPConfig.h SPPoint.h SPLogger.h
 #use gcc -MM SPPoint.c to see the dependencies
 SPPoint.o: SPPoint.c SPPoint.h 
 	$(CC) $(C_COMP_FLAG) -c $*.c
-KDTreeBuiler.o: KDTreeBuiler.c KDTreeBuiler.h SPKDArrays.h SPPoint.h SPConfig.h SPListElement.h SPLogger.h SPBPriorityQueue.h
-	$(CC) $(C_COMP_FLAG) -c $*.c
-SPBPriorityQueue.o: SPBPriorityQueue.c SPBPriorityQueue.h SPListElement.h SPList.h SPLogger.h
-	$(CC) $(C_COMP_FLAG) -c $*.c
 SPConfig.o: SPConfig.c SPConfig.h 
-	$(CC) $(C_COMP_FLAG) -c $*.c
-SPFeatures.o: SPFeatures.c SPFeatures.h SPPoint.h SPLogger.h
-	$(CC) $(C_COMP_FLAG) -c $*.c	
-SPKDArrays.o: SPKDArrays.c SPKDArrays.h SPPoint.h SPLogger.h
 	$(CC) $(C_COMP_FLAG) -c $*.c	
 SPList.o: SPList.c SPList.h 
-	$(CC) $(C_COMP_FLAG) -c $*.c	
-SPListElement.o: SPListElement.c SPListElement.h SPLogger.h
 	$(CC) $(C_COMP_FLAG) -c $*.c
 SPLogger.o: SPLogger.c SPLogger.h 
 	$(CC) $(C_COMP_FLAG) -c $*.c	
+SPKDArrays.o: SPKDArrays.c SPKDArrays.h SPPoint.h SPLogger.h
+	$(CC) $(C_COMP_FLAG) -c $*.c
+SPListElement.o: SPListElement.c SPListElement.h SPLogger.h
+	$(CC) $(C_COMP_FLAG) -c $*.c	
+SPFeatures.o: SPFeatures.c SPFeatures.h SPPoint.h SPLogger.h
+	$(CC) $(C_COMP_FLAG) -c $*.c	
+SPBPriorityQueue.o: SPBPriorityQueue.c SPBPriorityQueue.h SPListElement.h SPList.h SPLogger.h
+	$(CC) $(C_COMP_FLAG) -c $*.c
+KDTreeBuiler.o: KDTreeBuiler.c KDTreeBuiler.h SPKDArrays.h SPPoint.h SPConfig.h SPListElement.h SPLogger.h SPBPriorityQueue.h
+	$(CC) $(C_COMP_FLAG) -c $*.c
 clean:
 	rm -f $(OBJS) $(EXEC)
