@@ -23,6 +23,7 @@ extern "C"
 #define PROGRAMNAME "SPCBIR"
 
 using namespace sp;
+//todo clear all prints
 
 int cmpFuncSPListElementByVals (const void * a, const void * b)
 {
