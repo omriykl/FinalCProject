@@ -15,6 +15,8 @@ extern "C"
 #include "SPKDArrays.h"
 #include "SPLogger.h"
 #include "SPFeatures.h"
+#include "SPListElement.h"
+#include "SPBPriorityQueue.h"
 #include <string.h>
 }
 
@@ -128,6 +130,7 @@ int main(int args_num, char** args)
 	if (config == NULL)
 	{
 		printf("error while reading config file");
+
 	}
 	else if(msg!=SP_CONFIG_SUCCESS){
 

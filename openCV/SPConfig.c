@@ -29,7 +29,7 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 	if (strcmp(var, "spImagesDirectory") == 0)
 	{
 		i = 0;
-		while (val[i] != '\0')
+		while (val[i] != '\0' && val[i] != '\r' && val[i] != '\n')
 		{
 			if (val[i] == ' ')
 			{
@@ -40,19 +40,20 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 		}
 
 		free(spConfig->spImagesDirectory);
+
 		spConfig->spImagesDirectory = malloc(sizeof(char) * 1025);
 		spConfig->spImagesDirectory[0] = '\0';
 
 		strcpy(spConfig->spImagesDirectory, val);
 		//TODO fix spImagesDirectory set
-		spConfig->spImagesDirectory = "./images2/";
+		//spConfig->spImagesDirectory = "./images2/";
 
 		printf("%s - %s\n", var, val);
 	}
 	else if (strcmp(var, "spImagesPrefix") == 0)
 	{
 		i = 0;
-		while (val[i] != '\0')
+		while (val[i] != '\0' && val[i] != '\r' && val[i] != '\n')
 		{
 			if (val[i] == ' ')
 			{
@@ -71,7 +72,7 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 	else if (strcmp(var, "spImagesSuffix") == 0)
 	{
 		i = 0;
-		while (val[i] != '\0')
+		while (val[i] != '\0' && val[i] != '\r' && val[i] != '\n')
 		{
 			if (val[i] == ' ')
 			{
@@ -91,7 +92,7 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 	else if (strcmp(var, "spLoggerFilename") == 0)
 	{
 		i = 0;
-		while (val[i] != '\0')
+		while (val[i] != '\0' && val[i] != '\r' && val[i] != '\n')
 		{
 			if (val[i] == ' ')
 			{
@@ -112,7 +113,7 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 	else if (strcmp(var, "spPCAFilename") == 0)
 	{
 		i = 0;
-		while (val[i] != '\0')
+		while (val[i] != '\0' && val[i] != '\r' && val[i] != '\n')
 		{
 			if (val[i] == ' ')
 			{
@@ -394,17 +395,19 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 						"File: %s\n Line: %d\n Message: Invalid configuration line\n",
 						filename, countLine);
 			}
-			value[valIndex] = '\0';
-			setResult = SetConfigValue(var, value, spConfig, msg);
+			else{
+				value[valIndex] = '\0';
+				setResult = SetConfigValue(var, value, spConfig, msg);
 
-			if (setResult == false)
-			{
-				printf(
-						"File: %s\n Line: %d\n Message: Invalid value - constraint not met\n",
-						filename, countLine);
-				spConfigDestroy(spConfig);
-				return NULL;
+						if (setResult == false)
+						{
+							printf(
+									"File: %s\n Line: %d\n Message: Invalid value - constraint not met\n",
+									filename, countLine);
+							return NULL;
+						}
 			}
+
 		}
 		countLine++;
 	}
@@ -414,33 +417,29 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 	if (spConfig->spImagesDirectory == NULL)
 	{
 		*msg = SP_CONFIG_MISSING_DIR;
-		printf("File: %s\n Line: %s\n Message: Parameter %s is not set\n",
+		printf("File: %s\n Line: %d\n Message: Parameter %s is not set\n",
 				filename, countLine, "spImagesDirectory");
-		spConfigDestroy(spConfig);
 		return NULL;
 	}
 	else if (spConfig->spImagesPrefix == NULL)
 	{
 		*msg = SP_CONFIG_MISSING_PREFIX;
-		printf("File: %s\n Line: %s\n Message: Parameter %s is not set\n",
+		printf("File: %s\n Line: %d\n Message: Parameter %s is not set\n",
 				filename, countLine, "spImagesPrefix");
-		spConfigDestroy(spConfig);
 		return NULL;
 	}
 	else if (spConfig->spImagesSuffix == NULL)
 	{
 		*msg = SP_CONFIG_MISSING_SUFFIX;
-		printf("File: %s\n Line: %s\n Message: Parameter %s is not set\n",
+		printf("File: %s\n Line: %d\n Message: Parameter %s is not set\n",
 				filename, countLine, "spImagesSuffix");
-		spConfigDestroy(spConfig);
 		return NULL;
 	}
 	else if (spConfig->spNumOfImages == -1)
 	{
 		*msg = SP_CONFIG_MISSING_NUM_IMAGES;
-		printf("File: %s\n Line: %s\n Message: Parameter %s is not set\n",
+		printf("File: %s\n Line: %d\n Message: Parameter %s is not set\n",
 				filename, countLine, "spNumOfImages");
-		spConfigDestroy(spConfig);
 		return NULL;
 	}
 	printf("end\n");
@@ -625,7 +624,6 @@ void spConfigDestroy(SPConfig config)
 		free(config->spLoggerFilename);
 		free(config->spPCAFilename);
 		free(config);
-
 	}
 }
 
