@@ -46,7 +46,7 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 
 		strcpy(spConfig->spImagesDirectory, val);
 		//TODO fix spImagesDirectory set
-		//spConfig->spImagesDirectory = "./images2/";
+		spConfig->spImagesDirectory = "./images2/";
 
 		printf("%s - %s\n", var, val);
 	}
@@ -242,6 +242,17 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 	}
 	else if (strcmp(var, "spKDTreeSplitMethod") == 0)
 	{
+		i = 0;
+		while (val[i] != '\0' && val[i] != '\r' && val[i] != '\n')
+		{
+			if (val[i] == ' ')
+				{
+						*msg = SP_CONFIG_INVALID_STRING;
+						return false;
+			    }
+		  i++;
+		}
+
 		if (strcmp(val, "RANDOM") == 0)
 			spConfig->spKDTreeSplitMethod = RANDOM;
 		else if (strcmp(val, "MAX_SPREAD") == 0)
@@ -264,8 +275,8 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 {
 	SPConfig spConfig = (SPConfig) malloc(sizeof(*spConfig));
 	char *line = malloc(sizeof(char) * 1025);
-	char *var = malloc(sizeof(char) * 1025);
-	char *value = malloc(sizeof(char) * 1025);
+	char *var;
+	char *value;
 	int varOrValue = 0; //0=nothing yet, 1= var, 2=value;
 	int varIndex = 0;
 	int valIndex = 0;
@@ -276,7 +287,17 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 
 	printf("start");
 
-	if (line == NULL || var == NULL || value == NULL || spConfig == NULL)
+	spConfig->spPCADimension = 20;
+	spConfig->spNumOfFeatures = 100;
+	spConfig->spExtractionMode = true;
+	spConfig->spMinimalGUI = false;
+	spConfig->spNumOfSimilarImages = 1;
+	spConfig->spKNN = 1;
+	spConfig->spKDTreeSplitMethod = MAX_SPREAD;
+	spConfig->spLoggerLevel = 3;
+	spConfig->spNumOfImages = -1;
+
+	if (line == NULL || spConfig == NULL)
 	{
 		*msg = SP_CONFIG_ALLOC_FAIL;
 		return NULL;
@@ -294,17 +315,6 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 		*msg = SP_CONFIG_CANNOT_OPEN_FILE;
 		return NULL;
 	}
-	spConfig->spPCADimension = 20;
-	spConfig->spPCAFilename = "pca.yml";
-	spConfig->spNumOfFeatures = 100;
-	spConfig->spExtractionMode = true;
-	spConfig->spMinimalGUI = false;
-	spConfig->spNumOfSimilarImages = 1;
-	spConfig->spKNN = 1;
-	spConfig->spKDTreeSplitMethod = MAX_SPREAD;
-	spConfig->spLoggerLevel = 3;
-	spConfig->spLoggerFilename = "stdout";
-	spConfig->spNumOfImages = -1;
 
 	while (fgets(line, 1024, configFile) != NULL)
 	{
@@ -315,6 +325,14 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 			valIndex = 0;
 			i = 0;
 			varOrValue = 0;
+			var= malloc(sizeof(char) * 1025);
+			value= malloc(sizeof(char) * 1025);
+			if (var == NULL || value == NULL)
+				{
+					*msg = SP_CONFIG_ALLOC_FAIL;
+					return NULL;
+				}
+
 			var[0] = '\0';
 			value[0] = '\0';
 
@@ -407,9 +425,11 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 							return NULL;
 						}
 			}
-
+			free(var);
+			free(value);
 		}
 		countLine++;
+
 	}
 
 	printf("check\n");
@@ -446,8 +466,15 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 	*msg = SP_CONFIG_SUCCESS;
 
 	free(line);
-	free(var);
-	free(value);
+
+
+	if(spConfig->spPCAFilename==NULL){
+		spConfig->spPCAFilename = "pca.yml";
+	}
+	if(spConfig->spLoggerFilename){
+		spConfig->spLoggerFilename = NULL;
+	}
+
 
 	return spConfig;
 
