@@ -471,7 +471,7 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 	if(spConfig->spPCAFilename==NULL){
 		spConfig->spPCAFilename = "pca.yml";
 	}
-	if(spConfig->spLoggerFilename){
+	if(spConfig->spLoggerFilename==NULL || strcmp(spConfig->spLoggerFilename,"stdout")==0){
 		spConfig->spLoggerFilename = NULL;
 	}
 

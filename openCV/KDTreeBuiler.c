@@ -203,13 +203,19 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim,SP_SPLI
 
 }
 SPPoint KDTreeNodeGetData(KDTreeNode node){
+	if(node==NULL)
+		return NULL;
 	return node->Data;
 }
 
 KDTreeNode KDTreeNodeGetLeft(KDTreeNode node){
+	if(node==NULL)
+			return NULL;
 	return node->Left;
 }
 KDTreeNode KDTreeNodeGetRight(KDTreeNode node){
+	if(node==NULL)
+			return NULL;
 	return node->Right;
 }
 
