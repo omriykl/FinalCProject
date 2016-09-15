@@ -177,7 +177,7 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim,SP_SPLI
 		}
 
 		//the value of the coor of the most right point in the left array
-		head->Val=spPointGetAxisCoor(KDArrayGetTheMostRightPoint(splitReturn[0]),dimToSplitBy);
+		head->Val=spPointGetAxisCoor(KDArrayGetTheMostRightPoint(splitReturn[0],dimToSplitBy),dimToSplitBy);
 
 		head->Left=CreateTreeNode(splitReturn[0],spConfig,incNextDim+1,method);
 		head->Right=CreateTreeNode(splitReturn[1],spConfig,incNextDim+1,method);

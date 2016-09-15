@@ -378,12 +378,12 @@ int** SPKDArrayGetMatrix(SPKDArray arr){
 }
 
 
-SPPoint KDArrayGetTheMostRightPoint(SPKDArray arr){
+SPPoint KDArrayGetTheMostRightPoint(SPKDArray arr, int coor){
 	if(arr==NULL){
 				spLoggerPrintWarning("arr in null",__FILE__, __func__, __LINE__);
 				return NULL;
 			}
-	return arr->points[arr->numOfPoints -1];
+	return arr->points[arr->matrix[coor][arr->numOfPoints -1]];
 }
 
 
@@ -424,55 +424,81 @@ void SPKDArrayDestroy(SPKDArray arr){
 	free(arr);
 }
 
-//void main()
-//{
-//	double data1[2]={1,2};
-//	double data2[2]={123,70};
-//	double data3[2]={2,7};
-//	double data4[2]={9,11};
-//	double data5[2]={3,4};
-//	SPPoint p[5];
-//	p[0]= spPointCreate(data1,2,0);
-//	p[1]= spPointCreate(data2,2,1);
-//	p[2]= spPointCreate(data3,2,2);
-//	p[3]= spPointCreate(data4,2,3);
-//	p[4]= spPointCreate(data5,2,4);
+void main4()
+{
+//	double allData[100][28];
+//	SPPoint p[100];
 //
-//	SPKDArray kdAr = init(p,5);
+	int i,j;
 //
-//	int i,j;
-//
-//	for (i=0;i<2;i++)
+//	for (i=0;i<100;i++)
 //	{
-//		printf("[");
-//		for (j=0;j<5;j++)
+//		for (j=0;j<28;j++)
 //		{
-//			printf("%d , ",kdAr->matrix[i][j]);
+//			allData[i][j] = i*j;
 //		}
-//		printf("]\n");
+//		p[i] = spPointCreate(allData[i],28,i);
 //	}
 //
-//	printf("\n\n");
-//	SPKDArray* kdArs = split(kdAr,0);
-//
-//	for (i=0;i<2;i++)
+//	for (i=0;i<100;i++)
 //	{
-//		printf("[");
-//		for (j=0;j<3;j++)
-//		{
-//			printf("%d , ",kdArs[0]->matrix[i][j]);
-//		}
-//		printf("]\n");
+//		printf("%f\n",allData[i][0]);
 //	}
 //
-//	for (i=0;i<2;i++)
-//	{
-//		printf("[");
-//		for (j=0;j<2;j++)
-//		{
-//			printf("%d , ",kdArs[1]->matrix[i][j]);
-//		}
-//		printf("]\n");
-//	}
-//
-//}
+//	SPKDArray kdAr = init(p,100);
+
+	double data1[2]={1,2};
+	double data2[2]={123,70};
+	double data3[2]={2,7};
+	double data4[2]={9,11};
+	double data5[2]={3,4};
+	SPPoint p[5];
+	p[0]= spPointCreate(data1,2,0);
+	p[1]= spPointCreate(data2,2,1);
+	p[2]= spPointCreate(data3,2,2);
+	p[3]= spPointCreate(data4,2,3);
+	p[4]= spPointCreate(data5,2,4);
+
+	SPKDArray kdAr = init(p,5);
+
+
+
+	for (i=0;i<2;i++)
+	{
+		printf("[");
+		for (j=0;j<5;j++)
+		{
+			printf("%d,",kdAr->matrix[i][j]);
+		}
+		printf("]\n");
+	}
+
+
+	printf("\n\n");
+	SPKDArray* kdArs = split(kdAr,0);
+
+	printf("%f\n", spPointGetAxisCoor(KDArrayGetTheMostRightPoint(kdArs[0],1),0));
+
+	for (i=0;i<2;i++)
+	{
+		printf("[");
+		for (j=0;j<3;j++)
+		{
+			printf("%d,",kdArs[0]->matrix[i][j]);
+		}
+		printf("]\n");
+	}
+
+	printf("\n\n");
+
+	for (i=0;i<2;i++)
+	{
+		printf("[");
+		for (j=0;j<2;j++)
+		{
+			printf("%d,",kdArs[1]->matrix[i][j]);
+		}
+		printf("]\n");
+	}
+
+}
