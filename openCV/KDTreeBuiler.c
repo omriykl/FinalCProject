@@ -68,7 +68,7 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim,SP_SPLI
 	}
 	SPKDArray* splitReturn=NULL;
 	int i,j,dimToSplitBy;
-	double min,max,temp;
+	double min,max,temp,highestSpread;
 	int numOfDims=SPKDArrayGetNumOfDims(kda);
 	int numOfPoints=SPKDArrayGetNumOfPoints(kda);
 	SPPoint* points=SPKDArrayGetpoints(kda);
@@ -100,7 +100,9 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim,SP_SPLI
 					spLoggerPrintWarning("points[0] in null",__FILE__, __func__, __LINE__);
 					return NULL;
 				}
-
+			dimToSplitBy=0;
+			highestSpread=-1.0;
+			
 			for(i=0;i<numOfDims;i++){
 
 				if(points[0]==NULL){
@@ -108,6 +110,7 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim,SP_SPLI
 					return NULL;
 				}
 				else{
+					
 					min=spPointGetData(points[0])[i];
 					max=spPointGetData(points[0])[i];
 				}
@@ -131,18 +134,12 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim,SP_SPLI
 
 				}
 
-				allDimsDiff[i]= spListElementCreate(i, max-min);
-
-				if(allDimsDiff[i]==NULL){
-					spLoggerPrintError("error allocation allDimsDiff[i]",__FILE__, __func__, __LINE__);
-				}
+				if (highestSpread < (max - min)){
+					highestSpread = (max - min);
+						dimToSplitBy = i;
+					}
 
 			}
-
-			qsort(allDimsDiff,numOfDims,sizeof(SPListElement),cmpFuncSPListElementByVals);
-
-			dimToSplitBy = spListElementGetIndex(allDimsDiff[0]);
-
 
 
 		}
@@ -187,8 +184,9 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim,SP_SPLI
 	//FREE
 	if(method== MAX_SPREAD){
 		for(i=0;i<numOfDims;i++){
-
-				spListElementDestroy(allDimsDiff[i]);
+				if(allDimsDiff[i]!=NULL){
+							spListElementDestroy(allDimsDiff[i]);
+				}
 			}
 	}
 
