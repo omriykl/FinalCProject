@@ -47,7 +47,6 @@ void displayResults(SPConfig config,char *queryImg, char ** images,ImageProc pr)
 	int i;
 	SP_CONFIG_MSG msg;
 
-	//TODO error handling
 	if (spConfigMinimalGui(config,&msg))
 	{
 		for (i=0;i<spConfigGetspNumOfSimilarImages(config);i++)
@@ -140,10 +139,6 @@ int main(int args_num, char** args)
 		spConfigPrint(config);
 		spLoggerPrintInfo("After Config Creation");
 
-
-		//printf("%s", "After config:\n");
-		//fflush(NULL);
-
 		logger = spLoggerCreate(spConfigGetspLoggerFilename(config),spConfigGetspLoggerLevel(config));
 		if(logger!=SP_LOGGER_SUCCESS){
 			spLoggerPrintError("error reading spLoggerCreate",__FILE__, __func__, __LINE__);
@@ -151,10 +146,7 @@ int main(int args_num, char** args)
 
 		ImageProc pr(config);
 
-		//printf("%s", "After ImageProc :\n");
 		spLoggerPrintInfo("After ImageProc Creation");
-
-		//fflush(NULL);
 
 		numOfImages = spConfigGetNumOfImages(config, &msg);
 		if(msg!=SP_CONFIG_SUCCESS){
@@ -183,10 +175,8 @@ int main(int args_num, char** args)
 					spLoggerPrintError("error allocation imagePath",__FILE__, __func__, __LINE__);
 				}
 
-		//printf("%s", "After imagePath:\n");
 		spLoggerPrintInfo("After imagePath Creation");
 
-		//fflush(NULL);
 		if (spConfigIsExtractionMode(config, &msg) == true)
 		{
 
@@ -275,15 +265,9 @@ int main(int args_num, char** args)
 		arr = init(allImagesFeats,featIndex);
 		spLoggerPrintInfo("After arr Creation");
 
-		//printf("%s", "After arr:\n");
-			//	fflush(NULL);
-
 		tree= CreateTreeFromArray(arr,config);
 
 		spLoggerPrintInfo("After tree Creation");
-
-		//printf("%s", "After tree:\n");
-			//	fflush(NULL);
 
 		printf("%s", "Please enter an image path:\n");
 		fflush(NULL);
@@ -297,15 +281,9 @@ int main(int args_num, char** args)
 
 			spLoggerPrintInfo("After quaryFeats Creation");
 
-			printf("After quaryFeats : featfound=%d:\n",featsFound);
-							fflush(NULL);
-
-
 			for(i=0;i<featsFound;i++){
 
 				 bpq = FindkNearestNeighbors(tree,quaryFeats[i],config);
-
-				 //printf("bpq size is %d\n",spBPQueueSize(bpq));
 
 				 for(j=0;j<spBPQueueSize(bpq);j++)
 				 {
@@ -316,7 +294,6 @@ int main(int args_num, char** args)
 					 val = val + 1.0;
 					 spListElementSetValue(topOfTheBPQ,val);
 
-					 //printf("add 1 to value on index %d\n",spListElementGetIndex(topOfTheBPQ));
 					 spListElementDestroy(tempElement);
 
 					 bpqMsg =spBPQueueDequeue(bpq);
@@ -324,26 +301,14 @@ int main(int args_num, char** args)
 					 					spLoggerPrintError("error with spBPQueueDequeue",__FILE__, __func__, __LINE__);
 					 						}
 				 }
-				 //printf("bpq size is %d\n",spBPQueueSize(bpq));
 				 spBPQueueDestroy(bpq);
 			}
 
 			spLoggerPrintInfo("Beofore qsort ");
 
-			for(i=0;i<numOfImages;i++){
-				printf("before sort image %d value=%f\n",spListElementGetIndex(imagesFeatsMatchCount[i]),spListElementGetValue(imagesFeatsMatchCount[i]));
-			}
-
 			qsort(imagesFeatsMatchCount,numOfImages,sizeof(SPListElement),cmpFuncSPListElementByVals);
 
-			for(i=0;i<numOfImages;i++){
-						printf("after sort image %d value=%f\n",spListElementGetIndex(imagesFeatsMatchCount[i]),spListElementGetValue(imagesFeatsMatchCount[i]));
-					}
-
 			spLoggerPrintInfo("After qsort ");
-
-			printf("%s", "After qsort:\n");
-			fflush(NULL);
 
 			imagesFound = (char**) malloc(sizeof(char*)*spConfigGetspNumOfSimilarImages(config));
 
@@ -355,7 +320,6 @@ int main(int args_num, char** args)
 
 			displayResults(config,imagePath,imagesFound,pr);
 
-			//TODO: free imagesFound
 
 			for(i=0;i<featsFound;i++){
 				spPointDestroy(quaryFeats[i]);

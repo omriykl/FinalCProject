@@ -9,7 +9,6 @@
 
 void saveFeaturesToFile(char * imgDir,char * imgPre,int index,SPPoint * features,int numberOfFeats)
 {
-	//TODO: error handling
 	char filePath[1024];
 	int dim;
 	double * data;
@@ -47,7 +46,6 @@ void saveFeaturesToFile(char * imgDir,char * imgPre,int index,SPPoint * features
 
 SPPoint * getFeaturesFromFile(char * imgDir,char * imgPre,int index, int * numberOfFeats)
 {
-	//TODO: error handling
 	char filePath[1024];
 	int dim;
 	double * data;

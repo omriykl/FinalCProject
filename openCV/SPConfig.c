@@ -45,10 +45,6 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 		spConfig->spImagesDirectory[0] = '\0';
 
 		strcpy(spConfig->spImagesDirectory, val);
-		//TODO fix spImagesDirectory set
-		//spConfig->spImagesDirectory = "./images2/";
-
-		printf("%s - %s\n", var, val);
 	}
 	else if (strcmp(var, "spImagesPrefix") == 0)
 	{

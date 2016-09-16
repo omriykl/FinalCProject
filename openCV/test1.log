@@ -1,0 +1,10 @@
+---ERROR---
+- file: ..\SPImageProc.cpp
+- function: initPCAFromFile
+- line: 137
+- message: PCA file doesn't exist
+---ERROR---
+- file: ..\SPImageProc.cpp
+- function: ImageProc
+- line: 161
+- message: An error occurred
