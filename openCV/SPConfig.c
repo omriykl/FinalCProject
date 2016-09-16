@@ -62,7 +62,6 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 		spConfig->spImagesPrefix = malloc(sizeof(char) * 1025);
 		spConfig->spImagesPrefix[0] = '\0';
 		strcpy(spConfig->spImagesPrefix, val);
-		printf("%s - %s\n", var, val);
 
 	}
 	else if (strcmp(var, "spImagesSuffix") == 0)
@@ -82,7 +81,6 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 		spConfig->spImagesSuffix = malloc(sizeof(char) * 1025);
 		spConfig->spImagesSuffix[0] = '\0';
 		strcpy(spConfig->spImagesSuffix, val);
-		printf("%s - %s\n", var, val);
 
 	}
 	else if (strcmp(var, "spLoggerFilename") == 0)
@@ -103,7 +101,6 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 		spConfig->spLoggerFilename[0] = '\0';
 
 		strcpy(spConfig->spLoggerFilename, val);
-		printf("%s - %s\n", var, val);
 
 	}
 	else if (strcmp(var, "spPCAFilename") == 0)
@@ -124,7 +121,6 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 		spConfig->spPCAFilename[0] = '\0';
 
 		strcpy(spConfig->spPCAFilename, val);
-		printf("%s - %s\n", var, val);
 
 	}
 	else if (strcmp(var, "spNumOfFeatures") == 0)
@@ -145,7 +141,6 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 			return false;
 		}
 		spConfig->spNumOfImages = atoi(val);
-		printf("%s - %s\n", var, val);
 	}
 	else if (strcmp(var, "spPCADimension") == 0)
 	{
@@ -155,7 +150,6 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 			return false;
 		}
 		spConfig->spPCADimension = atoi(val);
-		printf("%s - %s\n", var, val);
 
 	}
 	else if (strcmp(var, "spNumOfSimilarImages") == 0)
@@ -166,7 +160,6 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 			return false;
 		}
 		spConfig->spNumOfSimilarImages = atoi(val);
-		printf("%s - %s\n", var, val);
 
 	}
 	else if (strcmp(var, "spKNN") == 0)
@@ -177,7 +170,6 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 			return false;
 		}
 		spConfig->spKNN = atoi(val);
-		printf("%s - %s\n", var, val);
 
 	}
 	else if (strcmp(var, "spLoggerLevel") == 0)
@@ -189,7 +181,6 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 			return false;
 		}
 		spConfig->spLoggerLevel = atoi(val);
-		printf("%s - %s\n", var, val);
 
 	}
 	else if (strcmp(var, "spExtractionMode") == 0)
@@ -198,13 +189,11 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 		if (strcmp(val, "true") == 0)
 		{
 			spConfig->spExtractionMode = true;
-			printf("%s - %s\n", var, val);
 
 		}
 		else if (strcmp(val, "false") == 0)
 		{
 			spConfig->spExtractionMode = false;
-			printf("%s - %s\n", var, val);
 
 		}
 		else
@@ -220,13 +209,11 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 		if (strcmp(val, "true") == 0)
 		{
 			spConfig->spMinimalGUI = true;
-			printf("%s - %s\n", var, val);
 
 		}
 		else if (strcmp(val, "false") == 0)
 		{
 			spConfig->spMinimalGUI = false;
-			printf("%s - %s\n", var, val);
 
 		}
 		else
@@ -260,7 +247,6 @@ bool SetConfigValue(char * var, char * val, SPConfig spConfig,
 			*msg = SP_CONFIG_INVALID_STRING;
 			return false;
 		}
-		printf("%s - %s\n", var, val);
 
 	}
 	return true;
@@ -281,7 +267,6 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 	FILE* configFile;
 	int countLine = 0;
 
-	printf("start");
 
 	spConfig->spPCADimension = 20;
 	spConfig->spNumOfFeatures = 100;
@@ -428,7 +413,6 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 
 	}
 
-	printf("check\n");
 	//check if all set
 	if (spConfig->spImagesDirectory == NULL)
 	{
@@ -458,7 +442,6 @@ SPConfig spConfigCreate(const char* filename, SP_CONFIG_MSG* msg)
 				filename, countLine, "spNumOfImages");
 		return NULL;
 	}
-	printf("end\n");
 	*msg = SP_CONFIG_SUCCESS;
 
 	free(line);

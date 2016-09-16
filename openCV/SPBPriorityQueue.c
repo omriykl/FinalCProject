@@ -206,43 +206,43 @@ bool spBPQueueIsFull(SPBPQueue source){
 }
 
 
-//int main()
-//{
-//	SPBPQueue a = spBPQueueCreate(5);
-//	printf("%d\n",spBPQueueSize(a));
-//	SPListElement sp = spListElementCreate(1,4.5);
-//	spBPQueueEnqueue(a,sp);
-//	printf("%d\n",spBPQueueSize(a));
-//
-//	sp = spListElementCreate(2,1.1);
-//	spBPQueueEnqueue(a,sp);
-//	printf("%d\n",spBPQueueSize(a));
-//
-//	sp = spListElementCreate(3,1.5);
-//	spBPQueueEnqueue(a,sp);
-//	printf("%d\n",spBPQueueSize(a));
-//
-//	sp = spListElementCreate(4,0.6);
-//	spBPQueueEnqueue(a,sp);
-//	printf("%d\n",spBPQueueSize(a));
-//
-//	sp = spListElementCreate(5,0.1);
-//	spBPQueueEnqueue(a,sp);
-//	printf("%d\n",spBPQueueSize(a));
-//
-//	sp = spListElementCreate(6,6.2);
-//	spBPQueueEnqueue(a,sp);
-//	printf("%d\n",spBPQueueSize(a));
-//
-////	spBPQueueDequeue(a);
-////	spBPQueueDequeue(a);
-//
-//	printf("%f\n",spListElementGetValue(spListGetLast(a->list)));
-//	printf("%f\n",spListElementGetValue(spListGetFirst(a->list)));
-//
-//	printf("%d\n",spBPQueueSize(a));
-//
-//	printf("%f\n",spBPQueueMinValue(a));
-//	printf("%d\n",spBPQueueIsEmpty(a));
-//	printf("%d\n",spBPQueueIsFull(a));
-//}
+void SPBQUnitTest()
+{
+	SPBPQueue a = spBPQueueCreate(5);
+	printf("%d\n",spBPQueueSize(a));
+	SPListElement sp = spListElementCreate(1,4.5);
+	spBPQueueEnqueue(a,sp);
+	printf("%d\n",spBPQueueSize(a));
+
+	sp = spListElementCreate(2,1.1);
+	spBPQueueEnqueue(a,sp);
+	printf("%d\n",spBPQueueSize(a));
+
+	sp = spListElementCreate(3,1.5);
+	spBPQueueEnqueue(a,sp);
+	printf("%d\n",spBPQueueSize(a));
+
+	sp = spListElementCreate(4,0.6);
+	spBPQueueEnqueue(a,sp);
+	printf("%d\n",spBPQueueSize(a));
+
+	sp = spListElementCreate(5,0.1);
+	spBPQueueEnqueue(a,sp);
+	printf("%d\n",spBPQueueSize(a));
+
+	sp = spListElementCreate(6,6.2);
+	spBPQueueEnqueue(a,sp);
+	printf("%d\n",spBPQueueSize(a));
+
+//	spBPQueueDequeue(a);
+//	spBPQueueDequeue(a);
+
+	printf("%f\n",spListElementGetValue(spListGetLast(a->list)));
+	printf("%f\n",spListElementGetValue(spListGetFirst(a->list)));
+
+	printf("%d\n",spBPQueueSize(a));
+
+	printf("%f\n",spBPQueueMinValue(a));
+	printf("%d\n",spBPQueueIsEmpty(a));
+	printf("%d\n",spBPQueueIsFull(a));
+}

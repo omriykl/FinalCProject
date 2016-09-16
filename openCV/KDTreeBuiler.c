@@ -227,11 +227,7 @@ void kNearestNeighbors(KDTreeNode curr,SPBPQueue bpq, SPPoint P){
 	}
 
 	//check if |curr.val - P[curr.dim]|^2 is less than the priority of the max-priority element of bpq
-
-	//temp=(curr->Val - spPointGetData(P)[curr->Dim]);
 	temp=curr->Val - spPointGetAxisCoor(P,curr->Dim);
-
-	//checkCondition= ((temp*temp) < spBPQueueMaxValue(bpq));
 
 	if(!spBPQueueIsFull(bpq) || ((temp*temp) < spBPQueueMaxValue(bpq))){
 		if(sideToSearch==true){

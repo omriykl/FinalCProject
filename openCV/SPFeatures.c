@@ -78,63 +78,61 @@ SPPoint * getFeaturesFromFile(char * imgDir,char * imgPre,int index, int * numbe
 	return feats;
 }
 
-void main2()
+void FeatsUnitTest()
 {
-//	double data1[100][28];
-//	int i,j;
-//
-//	SPPoint *points = (SPPoint*) malloc(sizeof(SPPoint)*100);
-//
-//	for (i=0;i<100;i++)
-//	{
-//		for (j=0;j<28;j++)
-//		{
-//			data1[i][j] = i*j;
-//		}
-//		points[i] = spPointCreate(data1[i],28,0);
-//	}
-//
-//	saveFeaturesToFile("images\\","img",400,points,100);
-//
-//	int num;
-//
-//	SPPoint * points2 = getFeaturesFromFile("images2\\","img",0,&num);
-//
-//	printf("\ngot %d",num);
-//	printf("\npoint %d",spPointGetDimension(points2[0]));
-//	printf("\npoint data %f",spPointGetAxisCoor(points2[5],5));
+	double data1[100][28];
+	int i,j;
+	int num;
+	int dim;
+	double * data;
+	SPPoint *points = (SPPoint*) malloc(sizeof(SPPoint)*100);
 
-//	int num;
-//	int dim;
-//	double * data;
-//
-//	FILE * file = fopen("images2/img0.feats","r");
-//
-//	//reads number of features
-//	fread(&num,sizeof(int),1,file);
-//	fread(&dim,sizeof(int),1,file);
-//
-//	fseek(file,7,SEEK_SET);
-//
-//	data = (double*) malloc(sizeof(double)*200);
-//
-//	int d = fread(data,sizeof(double),200,file);
-//
-//	fflush(NULL);
-//	printf("%d %d %f read total = %d\n",num,dim,data[0],d);
-//
-////	fseek(file,4,SEEK_SET);
-//
-//	dim=20;
-//
-//	fread(&dim,sizeof(int),1,file);
-//
-//	data = (double*) malloc(sizeof(double)*dim);
-//
-//	int read = fread(data,sizeof(double),dim,file);
-//
-//	printf("%d %d %f %d",num,dim,data[0],read);
-//
-//	fclose(file);
+	for (i=0;i<100;i++)
+	{
+		for (j=0;j<28;j++)
+		{
+			data1[i][j] = i*j;
+		}
+		points[i] = spPointCreate(data1[i],28,0);
+	}
+
+	saveFeaturesToFile("images\\","img",400,points,100);
+
+	SPPoint * points2 = getFeaturesFromFile("images2\\","img",0,&num);
+
+	printf("\ngot %d",num);
+	printf("\npoint %d",spPointGetDimension(points2[0]));
+	printf("\npoint data %f",spPointGetAxisCoor(points2[5],5));
+
+
+
+	FILE * file = fopen("images2/img0.feats","r");
+
+	//reads number of features
+	fread(&num,sizeof(int),1,file);
+	fread(&dim,sizeof(int),1,file);
+
+	fseek(file,7,SEEK_SET);
+
+	data = (double*) malloc(sizeof(double)*200);
+
+	int d = fread(data,sizeof(double),200,file);
+
+	fflush(NULL);
+	printf("%d %d %f read total = %d\n",num,dim,data[0],d);
+
+//	fseek(file,4,SEEK_SET);
+
+	dim=20;
+
+	fread(&dim,sizeof(int),1,file);
+
+	data = (double*) malloc(sizeof(double)*dim);
+
+	int read = fread(data,sizeof(double),dim,file);
+
+	printf("%d %d %f %d",num,dim,data[0],read);
+
+	fclose(file);
 
 }

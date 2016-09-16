@@ -424,7 +424,7 @@ void SPKDArrayDestroy(SPKDArray arr){
 	free(arr);
 }
 
-void main4()
+void KDArrayUnitTest()
 {
 //	double allData[100][28];
 //	SPPoint p[100];
