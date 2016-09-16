@@ -78,13 +78,6 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim,SP_SPLI
 			return NULL;
 		}
 
-	SPListElement* allDimsDiff=(SPListElement*)malloc(sizeof(SPListElement)* numOfDims);
-	if(allDimsDiff==NULL){
-			spLoggerPrintError("error allocation allDimsDiff",__FILE__, __func__, __LINE__);
-			return NULL;
-
-	}
-
 	if(numOfPoints==1){
 		head->Dim=-1;//invalid;
 		head->Val=-999.999;//invalid;
@@ -181,17 +174,6 @@ KDTreeNode CreateTreeNode(SPKDArray kda,SPConfig spConfig,int incNextDim,SP_SPLI
 
 	}
 
-	//FREE
-	if(method== MAX_SPREAD){
-		for(i=0;i<numOfDims;i++){
-				if(allDimsDiff[i]!=NULL){
-							spListElementDestroy(allDimsDiff[i]);
-				}
-			}
-	}
-
-
-	free(allDimsDiff);
 	SPKDArrayDestroy(kda);
 //	free(splitReturn);
 
