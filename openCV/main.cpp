@@ -136,7 +136,6 @@ int main(int args_num, char** args)
 
 	}
 	else{
-		spConfigPrint(config);
 		spLoggerPrintInfo("After Config Creation");
 
 		logger = spLoggerCreate(spConfigGetspLoggerFilename(config),spConfigGetspLoggerLevel(config));
